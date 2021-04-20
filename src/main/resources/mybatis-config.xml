@@ -5,12 +5,12 @@
 <configuration>
 	
   <properties resource="jdbc.properties"/>
-  
+
+  <!--为resultType起别名，用domain中的类-->
   <typeAliases>
   
-  	<!--<package name="com.xxx.domain"/>-->
-  	
-  
+  	<package name="com.bjpowernode.crm.settings.domain"/>
+
   </typeAliases>
   
   <environments default="development">
@@ -25,10 +25,10 @@
     </environment>
   </environments>
   
- 
+<!-- 用于映射文件那一层-->
   <mappers>
    
-     <!-- <package name="com.xxx.dao"/>-->
+      <package name="com.bjpowernode.crm.settings.dao"/>
     
   </mappers>
 </configuration>

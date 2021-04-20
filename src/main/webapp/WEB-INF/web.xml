@@ -5,15 +5,15 @@
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
   
-<!--  <servlet>
-    <servlet-name>xxxController</servlet-name>
-    <servlet-class>xxx.xxxController</servlet-class>
+  <servlet>
+    <servlet-name>UserController</servlet-name>
+    <servlet-class>com.bjpowernode.crm.settings.web.controller.UserController</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>xxxController</servlet-name>
-    <url-pattern>/xxx/xxx.do</url-pattern>
+    <servlet-name>UserController</servlet-name>
+    <url-pattern>/settings/user/xxx.do</url-pattern>
     
-  </servlet-mapping>-->
+  </servlet-mapping>
   
 </web-app>
 
