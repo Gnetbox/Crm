@@ -11,6 +11,64 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 	<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 	<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+
+	<script>
+
+		//页面加载完毕后，将文本框中的内容清空
+		$("#loginAct").val("");
+		$("#loginPwd").val("");
+
+		$(function (){
+			//页面加载完毕后，让用户文本框自动获得焦点
+			$("#loginAct").focus();
+
+			//为登录按钮绑定事件，执行登录操作
+			$("#regist").click(function (){
+				regist();
+			})
+
+			//为当前登录页窗口绑定敲键盘事件
+			//event：这个参数可以取得我们敲的是哪个键
+			$(window).keydown(function (event) {
+				//13表示enter键
+				if (event.keyCode == 13) {
+					regist();
+				}
+			});
+		})
+
+		function regist(){
+
+			//验证账号密码不能为空
+			let loginAct = $.trim($("#loginAct").val());
+			let loginPwd = $.trim($("#loginPwd").val());
+			if(loginAct == "" || loginPwd == ""){
+				$("#msg").html("账号密码不能为空");
+				//账号密码为空，需要强制终止该方法
+				return false;
+			}
+
+			//验证账号密码
+			$.ajax({
+				url:"settings/user/login.do",
+				data:{"loginAct":loginAct,"loginPwd":loginPwd},
+				type:"POST",
+				dataType:"json",
+				success:function (data){
+					//如果登录成功
+					if(data.flag){
+						//跳转到工作台的初始页
+						window.location.href = "workbench/index.html";
+					}else {
+						//登录失败，展示消息
+						$("#msg").html(data.msg);
+					}
+				}
+			})
+
+		}
+
+	</script>
 </head>
 <body>
 <div style="position: absolute; top: 0px; left: 0px; width: 60%;">
@@ -25,20 +83,20 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		<div class="page-header">
 			<h1>登录</h1>
 		</div>
-		<form action="workbench/index.html" class="form-horizontal" role="form">
+		<form action="workbench/index.html" id="form" class="form-horizontal" role="form">
 			<div class="form-group form-group-lg">
 				<div style="width: 350px;">
-					<input class="form-control" type="text" placeholder="用户名">
+					<input class="form-control" type="text" placeholder="用户名" id="loginAct" name="loginAct">
 				</div>
 				<div style="width: 350px; position: relative;top: 20px;">
-					<input class="form-control" type="password" placeholder="密码">
+					<input class="form-control" type="password" placeholder="密码" id="loginPwd" name="loginPwd">
 				</div>
 				<div class="checkbox"  style="position: relative;top: 30px; left: 10px;">
 
-					<span id="msg"></span>
+					<span id="msg" style="color: red"></span>
 
 				</div>
-				<button type="submit" class="btn btn-primary btn-lg btn-block"  style="width: 350px; position: relative;top: 45px;">登录</button>
+				<button type="button" id="regist" class="btn btn-primary btn-lg btn-block" style="width: 350px; position: relative;top: 45px;">登录</button>
 			</div>
 		</form>
 	</div>
