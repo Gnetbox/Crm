@@ -22,7 +22,7 @@ public class UserController extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("进入到用户控制器");
 
-        String path = request.getContextPath();
+        String path = request.getServletPath();
 
         if("/settings/user/login.do".equals(path)) {
             login(request,response);
@@ -34,6 +34,7 @@ public class UserController extends HttpServlet {
 
     //登录方法校验账号密码
     private void login(HttpServletRequest request, HttpServletResponse response) {
+
         //获取输入的账号和密码
         String loginAct = request.getParameter("loginAct");
         String loginPwd = request.getParameter("loginPwd");
