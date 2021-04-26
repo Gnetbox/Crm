@@ -34,7 +34,7 @@ public class UserController extends HttpServlet {
 
     //登录方法校验账号密码
     private void login(HttpServletRequest request, HttpServletResponse response) {
-
+        System.out.println("进入到验证登录操作");
         //获取输入的账号和密码
         String loginAct = request.getParameter("loginAct");
         String loginPwd = request.getParameter("loginPwd");
@@ -44,6 +44,7 @@ public class UserController extends HttpServlet {
 
         //接收浏览器端的ip地址
         String ip = request.getRemoteAddr();
+        System.out.println("ip:"+ip);
 
         //未来的业务层开发，统一使用代理类形态的接口对象
         UserService userService = (UserService)ServiceFactory.getService(new UserServiceImpl());
@@ -68,9 +69,7 @@ public class UserController extends HttpServlet {
             map.put("msg",msg);
             PrintJson.printJsonObj(response,map);
         }
-        
 
     }
-
 
 }

@@ -14,11 +14,16 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 	<script>
 
-		//页面加载完毕后，将文本框中的内容清空
-		$("#loginAct").val("");
-		$("#loginPwd").val("");
-
 		$(function (){
+
+			if(window.top != window){
+				window.top.location = window.location;
+			}
+
+			//页面加载完毕后，将文本框中的内容清空
+			$("#loginAct").val("");
+			$("#loginPwd").val("");
+
 			//页面加载完毕后，让用户文本框自动获得焦点
 			$("#loginAct").focus();
 
@@ -58,7 +63,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					//如果登录成功
 					if(data.success){
 						//跳转到工作台的初始页
-						window.location.href = "workbench/index.html";
+						window.location.href = "workbench/index.jsp";
 					}else {
 						//登录失败，展示消息
 						$("#msg").html(data.msg);
@@ -83,7 +88,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		<div class="page-header">
 			<h1>登录</h1>
 		</div>
-		<form action="workbench/index.html" id="form" class="form-horizontal" role="form">
+		<form action="workbench/index.jsp" id="form" class="form-horizontal" role="form">
 			<div class="form-group form-group-lg">
 				<div style="width: 350px;">
 					<input class="form-control" type="text" placeholder="用户名" id="loginAct" name="loginAct">

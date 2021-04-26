@@ -24,7 +24,7 @@ public class User {
      */
     private String id;//编号 主键
     private String loginAct;//登陆账号
-    private String NAME;//用户的真实姓名
+    private String name;//用户的真实姓名
     private String loginPwd;//登陆密码
     private String email;//邮箱
     private String expireTime;//失效时间 19位
@@ -52,12 +52,12 @@ public class User {
         this.loginAct = loginAct;
     }
 
-    public String getNAME() {
-        return NAME;
+    public String getname() {
+        return name;
     }
 
-    public void setNAME(String NAME) {
-        this.NAME = NAME;
+    public void setname(String name) {
+        this.name = name;
     }
 
     public String getLoginPwd() {
@@ -145,7 +145,7 @@ public class User {
         return "User{" +
                 "id='" + id + '\'' +
                 ", loginAct='" + loginAct + '\'' +
-                ", NAME='" + NAME + '\'' +
+                ", name='" + name + '\'' +
                 ", loginPwd='" + loginPwd + '\'' +
                 ", email='" + email + '\'' +
                 ", expireTime='" + expireTime + '\'' +
