@@ -16,10 +16,7 @@ public class LoginFilter implements Filter {
 
     }
 
-    @Override
-    public void destroy() {
 
-    }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
@@ -45,7 +42,9 @@ public class LoginFilter implements Filter {
                 response.sendRedirect(request.getContextPath()+"/login.jsp");
             }
         }
-
+    }
+    @Override
+    public void destroy() {
 
     }
 }

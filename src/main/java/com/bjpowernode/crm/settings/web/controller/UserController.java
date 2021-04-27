@@ -1,6 +1,4 @@
 package com.bjpowernode.crm.settings.web.controller;
-
-import com.bjpowernode.crm.settings.dao.UserDao;
 import com.bjpowernode.crm.settings.domain.User;
 import com.bjpowernode.crm.settings.service.Impl.UserServiceImpl;
 import com.bjpowernode.crm.settings.service.UserService;
@@ -14,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserController extends HttpServlet {
@@ -26,11 +25,9 @@ public class UserController extends HttpServlet {
 
         if("/settings/user/login.do".equals(path)) {
             login(request,response);
-        }else if("/settings/user/xxx.do".equals(path)) {
-
         }
-
     }
+
 
     //登录方法校验账号密码
     private void login(HttpServletRequest request, HttpServletResponse response) {

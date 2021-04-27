@@ -10,6 +10,7 @@
   <typeAliases>
   
   	<package name="com.bjpowernode.crm.settings.domain"/>
+    <package name="com.bjpowernode.crm.workbench.domain"/>
 
   </typeAliases>
   
@@ -29,6 +30,7 @@
   <mappers>
    
       <package name="com.bjpowernode.crm.settings.dao"/>
+      <package name="com.bjpowernode.crm.workbench.dao"/>
     
   </mappers>
 </configuration>

@@ -8,6 +8,7 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.SqlSessionUtil;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserServiceImpl implements UserService {
@@ -16,7 +17,6 @@ public class UserServiceImpl implements UserService {
     private UserDao userdao = SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
 
     public User findByNameAndPwd(String loginAct, String loginPwd, String ip) throws LoginException{
-        System.out.println("L20...");
         Map<String,String> map = new HashMap<>();
         map.put("loginAct",loginAct);
         map.put("loginPwd",loginPwd);
@@ -45,5 +45,10 @@ public class UserServiceImpl implements UserService {
         }
 
         return user;
+    }
+
+    @Override
+    public List<User> getUserList() {
+        return userdao.getUserList();
     }
 }

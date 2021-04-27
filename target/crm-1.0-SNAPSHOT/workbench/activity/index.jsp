@@ -20,7 +20,38 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 <script type="text/javascript">
 
 	$(function(){
-		
+
+		//为创建模态窗口按钮 (addBtn)绑定点击事件
+		$("#addBtn").click(function (){
+
+			//点击创建按钮，获得数据库中tbl_user的用户信息
+			$.ajax({
+				url:"workbench/activity/getUserList.do",
+				type:"get",
+				dataType:"json",
+				success:function (data){
+
+					let opt = "<option></option>";
+
+					$.each(data,function (index,element){
+					//拿到所有用户的名字信息
+					opt += ("<option value='"+element.id+"'>"+element.name+"</option>");
+					})
+
+					$("#create-marketActivityOwner").html(opt);
+
+					//取得当前用户id
+					//在js中使用el表达式
+					let id = "${user.id}";
+					//给<option>的value赋值
+					$("#create-marketActivityOwner").val(id);
+
+					//需要操作的模态窗口的jquery对象，调用modal方法，为该方法传递参数 show/hide
+					$("#createActivityModal").modal("show");
+
+				}
+			});
+		})
 		
 		
 	});
@@ -47,9 +78,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="create-marketActivityOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
 								</select>
 							</div>
                             <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
@@ -208,7 +236,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			</div>
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createActivityModal"><span class="glyphicon glyphicon-plus"></span> 创建</button>
+				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
 				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
