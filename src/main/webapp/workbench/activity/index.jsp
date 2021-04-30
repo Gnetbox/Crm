@@ -30,6 +30,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		//为创建模态窗口按钮 (addBtn)绑定点击事件
 		$("#addBtn").click(function (){
 
+			//模态窗口中日期插件
 			$(".time").datetimepicker({
 				minView:"month",
 				language:'zh-CN',
@@ -111,8 +112,23 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 			getActivity(1,2);
 		})
-		
-		
+
+        //为全选的复选框绑定事件，触发全选操作
+        $("#checkAll").click(function (){
+            $("input[name='checkOne']").prop("checked",this.checked);
+        });
+
+		//子框与总框发生关联
+		$("#activity-tbody").on("click",$("input[name='checkOne']"),function (){
+			let flg = true;
+			//如果有子框未被选中，则设置总框checked的属性为false
+			 if(($("input[name='checkOne']").not(":checked").size() > 0)){
+				 flg = false;
+			 }
+			$("#checkAll").prop("checked",flg);
+
+		})
+
 	});
 
 	//获取市场活动列表信息
@@ -148,12 +164,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				let activityTableStr = '';
 				$.each(data.dataList,function (index,element){
 					activityTableStr += '<tr class="active">';
-					activityTableStr += '<td><input type="checkbox" value="'+element.id+'"/></td>';
+					activityTableStr += '<td><input type="checkbox" value="'+element.id+'" name="checkOne" id="'+index+'"/></td>';
 					activityTableStr += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+element.name+'</a></td>';
 					activityTableStr += '<td>'+element.owner+'</td>';
 					activityTableStr += '<td>'+element.startDate+'</td>';
 					activityTableStr += '<td>'+element.endDate+'</td>';
 					activityTableStr += '</tr>';
+
+
 
 				})
 					$("#activity-tbody").html(activityTableStr);
@@ -379,7 +397,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<table class="table table-hover">
 					<thead>
 						<tr style="color: #B3B3B3;">
-							<td><input type="checkbox" /></td>
+							<td><input type="checkbox" id="checkAll"/></td>
 							<td>名称</td>
                             <td>所有者</td>
 							<td>开始日期</td>
