@@ -66,40 +66,39 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					$("#createActivityModal").modal("show");
 
 				}
-			});
-
-			//模态窗口，进行保存创建信息操作
-			$("#save").click(function (){
-
-				$.ajax({
-					url:"workbench/activity/save.do",
-					data:{
-						"owner":$.trim($("#create-marketActivityOwner").val()),
-						"name":$.trim($("#create-marketActivityName").val()),
-						"startDate":$.trim($("#create-startDate").val()),
-						"endDate":$.trim($("#create-endDate").val()),
-						"cost":$.trim($("#create-cost").val()),
-						"description":$.trim($("#create-describe").val())
-					},
-					type:"post",
-					dataType:"json",
-					success:function (data){
-						if(data.success){
-							//添加成功后，局部刷新市场活动信息列表
-
-							//清空模态窗口填写的信息
-							//$("#create-form")[0].reset();
-							//关闭模态窗口
-							$("#createActivityModal").modal("hide");
-
-						}else{
-							alert("添加市场活动失败");
-						}
-					}
-				})
 			})
-
 		});
+
+		//模态窗口，进行保存创建信息操作
+		$("#save").click(function (){
+
+			$.ajax({
+				url:"workbench/activity/save.do",
+				data:{
+					"owner":$.trim($("#create-marketActivityOwner").val()),
+					"name":$.trim($("#create-marketActivityName").val()),
+					"startDate":$.trim($("#create-startDate").val()),
+					"endDate":$.trim($("#create-endDate").val()),
+					"cost":$.trim($("#create-cost").val()),
+					"description":$.trim($("#create-describe").val())
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data){
+					if(data.success){
+						//添加成功后，局部刷新市场活动信息列表
+
+						//清空模态窗口填写的信息
+						$("#create-form")[0].reset();
+						//关闭模态窗口
+						$("#createActivityModal").modal("hide");
+
+					}else{
+						alert("添加市场活动失败");
+					}
+				}
+			})
+		})
 
 		//为查询绑定一个事件
 		$("#search").click(function (){
@@ -129,10 +128,110 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 		})
 
+		let ids = new Array();
+		//为删除按钮绑定点击事件
+		$("#delete").click(function (){
+
+			let check = $("input[name='checkOne']:checked");
+
+			if(check.length == 0){
+				alert("请选择需要删除的记录");
+			}else {
+				if(confirm("确认删除所选中的记录吗")){
+					//如果获取勾选值
+					$.each(check, function () {
+						ids.push($(this).val());
+					});
+
+					//拿到勾选值，发送ajax请求，进行数据库对应数据删除操作
+					$.ajax({
+						url:"workbench/activity/delete.do",
+						type:"post",
+						dataType:"json",
+						traditional:true,
+						data:{"ids":ids},
+						success:function (data){
+							if(data.success){
+								alert("删除成功");
+								getActivity(1,2);
+								ids.length = 0;
+							}else {
+								alert("删除失败");
+							}
+						}
+					});
+				}
+
+
+			}
+		})
+
+		//为修改按钮绑定点击事件
+		$("#edit").click(function (){
+			let check = $("input[name='checkOne']:checked");
+
+			if(check.length == 0){
+				alert("请选择需要修改的记录");
+			}else if(check.length > 1){
+				alert("只能选择一条记录进行修改");
+			}else{
+				//获取选择框的id值
+				let activityId = check.val();
+
+				//拿到所有者，并填充
+				//获得数据库中tbl_user的用户信息
+				$.ajax({
+					url:"workbench/activity/getUserList.do",
+					type:"get",
+					dataType:"json",
+					success:function (data){
+
+						let opt = "<option></option>";
+
+						$.each(data,function (index,element){
+							//拿到所有用户的名字信息
+							opt += "<option value='"+element.id+"'>"+element.name+"</option>";
+						})
+
+						$("#edit-marketActivityOwner").html(opt);
+
+						//取得当前用户id
+						//在js中使用el表达式
+						let id = "${user.id}";
+						//给<option>的value赋值
+						$("#edit-marketActivityOwner").val(id);
+
+					}
+				})
+				//根据选择框checkId 拿到activity详情
+				$.ajax({
+					url:"",
+					data:{"activityId":activityId},
+					type:"post",
+					dataType:"json",
+					success:function (data){
+						
+					}
+
+				})
+
+
+				//显示窗口
+				$("#editActivityModal").modal("show");
+
+
+
+			}
+		})
+
 	});
 
 	//获取市场活动列表信息
 	function getActivity(pageNum,pageSize){
+
+		//每次刷新市场活动列表，将总选择框取消选中
+		$("#checkAll").prop("checked",false);
+
 
 		$("#search-name").val($("#hidden-name").val());
 		$("#search-owner").val($("#hidden-owner").val());
@@ -164,14 +263,12 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				let activityTableStr = '';
 				$.each(data.dataList,function (index,element){
 					activityTableStr += '<tr class="active">';
-					activityTableStr += '<td><input type="checkbox" value="'+element.id+'" name="checkOne" id="'+index+'"/></td>';
+					activityTableStr += '<td><input type="checkbox" value="'+element.id+'" name="checkOne"/></td>';
 					activityTableStr += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+element.name+'</a></td>';
 					activityTableStr += '<td>'+element.owner+'</td>';
 					activityTableStr += '<td>'+element.startDate+'</td>';
 					activityTableStr += '<td>'+element.endDate+'</td>';
 					activityTableStr += '</tr>';
-
-
 
 				})
 					$("#activity-tbody").html(activityTableStr);
@@ -290,9 +387,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
 								<select class="form-control" id="edit-marketActivityOwner">
-								  <option>zhangsan</option>
-								  <option>lisi</option>
-								  <option>wangwu</option>
 								</select>
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
@@ -388,8 +482,8 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			<div class="btn-toolbar" role="toolbar" style="background-color: #F7F7F7; height: 50px; position: relative;top: 5px;">
 				<div class="btn-group" style="position: relative; top: 18%;">
 				  <button type="button" class="btn btn-primary" id="addBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
-				  <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				  <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				  <button type="button" class="btn btn-default" id="edit"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
+				  <button type="button" class="btn btn-danger" id="delete"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 				</div>
 				
 			</div>

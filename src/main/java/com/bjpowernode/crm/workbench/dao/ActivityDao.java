@@ -13,4 +13,7 @@ public interface ActivityDao {
     List<Activity> getActivity(Map<String, Object> map);
 
     int getTotal(Map<String, Object> map);
+
+    int delete(String id);
+
 }

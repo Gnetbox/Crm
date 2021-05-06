@@ -5,6 +5,7 @@ import com.bjpowernode.crm.utils.SqlSessionUtil;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PagenationVo;
 import com.bjpowernode.crm.workbench.dao.ActivityDao;
+import com.bjpowernode.crm.workbench.dao.ActivityRemarkDao;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 public class ActivityServiceImpl implements ActivityService {
 
     private ActivityDao activityDao = SqlSessionUtil.getSqlSession().getMapper(ActivityDao.class);
+    private ActivityRemarkDao activityRemarkDao = SqlSessionUtil.getSqlSession().getMapper(ActivityRemarkDao.class);
 
 
     @Override
@@ -39,6 +41,29 @@ public class ActivityServiceImpl implements ActivityService {
        vo.setDataList(activityList);
        return vo;
 
+    }
+
+    @Override
+    public boolean delete(String id) {
+        System.out.println("进入deleteSER。。。");
+        boolean flag = false;
+
+        //先删remark`市场活动备注，再删市场活动
+        //查询出需要删除的备注的数量
+        int countRemark = activityRemarkDao.findCountRemark(id);
+
+        //删除市场活动备注
+        int countDelRemark = activityRemarkDao.deleteRemark(id);
+
+        //如果活动备注成功删除，进行市场活动删除
+        if(countRemark == countDelRemark){
+            int count = activityDao.delete(id);
+            if(count !=0){
+                flag = true;
+            }
+        }
+
+        return flag;
     }
 
 

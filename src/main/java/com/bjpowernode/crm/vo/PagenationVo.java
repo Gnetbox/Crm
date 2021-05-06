@@ -22,4 +22,12 @@ public class PagenationVo<T> {
     public void setDataList(List<T> dataList) {
         this.dataList = dataList;
     }
+
+    @Override
+    public String toString() {
+        return "PagenationVo{" +
+                "total=" + total +
+                ", dataList=" + dataList +
+                '}';
+    }
 }

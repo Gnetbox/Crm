@@ -5,4 +5,14 @@
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.ActivityRemarkDao">
 
+    <!--查询需要删除的备注数-->
+    <select id="findCountRemark" resultType="int">
+        select count(*) from tbl_activity_remark where activityId = #{id}
+    </select>
+
+    <!--删除市场活动备注-->
+    <delete id="deleteRemark">
+        delete from tbl_activity_remark where activityId = #{id}
+    </delete>
+
 </mapper>
