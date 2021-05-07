@@ -13,4 +13,10 @@ public interface ActivityService {
     PagenationVo<Activity> getActivity(Map<String, Object> map);
 
     boolean delete(String id);
+
+    Activity edit(String activityId);
+
+    boolean update(Activity activity);
+
+    Activity getDetail(String id);
 }

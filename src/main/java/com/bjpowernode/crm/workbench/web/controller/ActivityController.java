@@ -37,12 +37,27 @@ public class ActivityController extends HttpServlet {
             getActivity(request,response);
         }else if("/workbench/activity/delete.do".equals(path)){
             delete(request,response);
+        }else if("/workbench/activity/edit.do".equals(path)){
+            edit(request,response);
+        }else if("/workbench/activity/update.do".equals(path)){
+            update(request,response);
+        } else if("/workbench/activity/getDetail.do".equals(path)){
+            getDetail(request,response);
         }
 
     }
 
+    //点击名字，进入到市场活动详情页面部分
+    private void getDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        System.out.println("进入到获取详情..");
+        String id = request.getParameter("id");
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        Activity activity = activityService.getDetail(id);
+        request.setAttribute("a",activity);
+        request.getRequestDispatcher("/workbench/activity/detail.jsp").forward(request,response);
 
+    }
 
     //获得所有用户的信息
     private void getUserList(HttpServletRequest request, HttpServletResponse response) {
@@ -83,7 +98,6 @@ public class ActivityController extends HttpServlet {
         boolean flag = activityService.save(activity);
         PrintJson.printJsonFlag(response,flag);
     }
-
 
     //获取创建活动列表信息
     private void getActivity(HttpServletRequest request, HttpServletResponse response) {
@@ -130,6 +144,46 @@ public class ActivityController extends HttpServlet {
             }
         }
 
+        PrintJson.printJsonFlag(response,flag);
+
+    }
+
+    //点击修改按钮，获取到市场详情信息
+    private void edit(HttpServletRequest request, HttpServletResponse response) {
+
+        String activityId = request.getParameter("activityId");
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        Activity activity = activityService.edit(activityId);
+        System.out.println("L143 :"+activity);
+        PrintJson.printJsonObj(response,activity);
+    }
+
+    //修改市场活动
+    private void update(HttpServletRequest request, HttpServletResponse response) {
+
+        System.out.println("进入update...");
+        String id = request.getParameter("id");
+        String owner = request.getParameter("owner");
+        System.out.println("L153-owner  :"+owner);
+        String name = request.getParameter("name");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String cost = request.getParameter("cost");
+        String description = request.getParameter("description");
+        String editBy = request.getParameter("editBy");
+
+        Activity activity = new Activity();
+        activity.setId(id);
+        activity.setOwner(owner);
+        activity.setName(name);
+        activity.setStartDate(startDate);
+        activity.setEndDate(endDate);
+        activity.setCost(cost);
+        activity.setDescription(description);
+        activity.setEditBy(editBy);
+
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = activityService.update(activity);
         PrintJson.printJsonFlag(response,flag);
 
     }

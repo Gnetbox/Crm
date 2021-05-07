@@ -87,7 +87,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				success:function (data){
 					if(data.success){
 						//添加成功后，局部刷新市场活动信息列表
-
+						getActivity(1,$("#activityPage").bs_pagination('getOption','rowsPerPage'));
 						//清空模态窗口填写的信息
 						$("#create-form")[0].reset();
 						//关闭模态窗口
@@ -153,7 +153,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 						success:function (data){
 							if(data.success){
 								alert("删除成功");
-								getActivity(1,2);
+								getActivity(1,$("#activityPage").bs_pagination('getOption','rowsPerPage'));
 								ids.length = 0;
 							}else {
 								alert("删除失败");
@@ -168,6 +168,16 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 		//为修改按钮绑定点击事件
 		$("#edit").click(function (){
+			//模态窗口中日期插件
+			$(".time").datetimepicker({
+				minView:"month",
+				language:'zh-CN',
+				format:'yyyy-mm-dd',
+				autoclose:true,
+				todayBtn:true,
+				pickerPosition:"bottom-left"
+			});
+
 			let check = $("input[name='checkOne']:checked");
 
 			if(check.length == 0){
@@ -195,37 +205,74 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 						$("#edit-marketActivityOwner").html(opt);
 
-						//取得当前用户id
-						//在js中使用el表达式
-						let id = "${user.id}";
-						//给<option>的value赋值
-						$("#edit-marketActivityOwner").val(id);
+						//根据选择框checkId 拿到activity详情
+						$.ajax({
+							url:"workbench/activity/edit.do",
+							data:{"activityId":activityId},
+							type:"post",
+							dataType:"json",
+							success:function (element){
+								//将市场活动详情填充到表格中
+								$("#edit-marketActivityOwner").val(element.owner);
+								$("#edit-marketActivityName").val(element.name);
+								$("#edit-startTime").val(element.startDate);
+								$("#edit-endTime").val(element.endDate);
+								$("#edit-cost").val(element.cost);
+								$("#edit-describe").val(element.description);
+							}
+						})
 
 					}
 				})
-				//根据选择框checkId 拿到activity详情
-				$.ajax({
-					url:"",
-					data:{"activityId":activityId},
-					type:"post",
-					dataType:"json",
-					success:function (data){
-						$("#edit-marketActivityName").val();
-						$("#edit-startTime").val();
-						$("#edit-endTime").val();
-						$("#edit-cost").val();
-						$("#edit-describe").val();
-
-					}
-
-				})
-
 
 				//显示窗口
 				$("#editActivityModal").modal("show");
 
 			}
 		})
+
+
+		//为修改内容--更新按钮绑定点击事件
+		$("#update").click(function (){
+			//获取选择框的id值
+			let activityId = $("input[name='checkOne']").val();
+			//获取表单内容
+			let owner = $("#edit-marketActivityOwner").val();
+			let name = $("#edit-marketActivityName").val();
+			let startDate = $("#edit-startTime").val();
+			let endDate = $("#edit-endTime").val();
+			let cost = $("#edit-cost").val();
+			let description = $("#edit-describe").val();
+			//获取修改人
+			let editBy = "${user.name}";
+
+			//发送ajax请求
+			$.ajax({
+				url:"workbench/activity/update.do",
+				data:{
+					"id":activityId,
+					"owner":owner,
+					"name":name,
+					"startDate":startDate,
+					"endDate" :endDate,
+					"cost":cost,
+					"description":description,
+					"editBy":editBy
+				},
+				type:"post",
+				dataType:"json",
+				success:function (data){
+					if(data.success){
+						$("#editActivityModal").modal("hide");
+						getActivity($("#activityPage").bs_pagination('getOption','currentPage'),
+								$("#activityPage").bs_pagination('getOption','rowsPerPage'));
+					}
+				}
+			})
+
+
+		})
+
 
 	});
 
@@ -267,7 +314,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				$.each(data.dataList,function (index,element){
 					activityTableStr += '<tr class="active">';
 					activityTableStr += '<td><input type="checkbox" value="'+element.id+'" name="checkOne"/></td>';
-					activityTableStr += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+element.name+'</a></td>';
+					activityTableStr += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/getDetail.do?id='+element.id+'\';">'+element.name+'</a></td>';
 					activityTableStr += '<td>'+element.owner+'</td>';
 					activityTableStr += '<td>'+element.startDate+'</td>';
 					activityTableStr += '<td>'+element.endDate+'</td>';
@@ -394,32 +441,32 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							</div>
                             <label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="edit-marketActivityName" value="发传单">
+                                <input type="text" class="form-control" id="edit-marketActivityName">
                             </div>
 						</div>
 
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+								<input type="text" class="form-control time" id="edit-startTime">
 							</div>
 							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+								<input type="text" class="form-control time" id="edit-endTime">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-cost" class="col-sm-2 control-label">成本</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-cost" value="5,000">
+								<input type="text" class="form-control" id="edit-cost">
 							</div>
 						</div>
 						
 						<div class="form-group">
 							<label for="edit-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="edit-describe">市场活动Marketing，是指品牌主办或参与的展览会议与公关市场活动，包括自行主办的各类研讨会、客户交流会、演示会、新产品发布会、体验会、答谢会、年会和出席参加并布展或演讲的展览会、研讨会、行业交流会、颁奖典礼等</textarea>
+								<textarea class="form-control" rows="3" id="edit-describe"></textarea>
 							</div>
 						</div>
 						
@@ -428,7 +475,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">更新</button>
+					<button type="button" class="btn btn-primary" id="update">更新</button>
 				</div>
 			</div>
 		</div>

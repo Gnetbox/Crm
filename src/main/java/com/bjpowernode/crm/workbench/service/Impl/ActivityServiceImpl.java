@@ -66,5 +66,33 @@ public class ActivityServiceImpl implements ActivityService {
         return flag;
     }
 
+    @Override
+    public Activity edit(String activityId) {
+
+        Activity activity = activityDao.edit(activityId);
+        return activity;
+    }
+
+    @Override
+    public boolean update(Activity activity) {
+        boolean flag = true;
+
+        //设置修改时间
+        String sysTime = DateTimeUtil.getSysTime();
+        activity.setEditTime(sysTime);
+        int count = activityDao.update(activity);
+        if(count == 0){
+            flag = false;
+        }
+        return flag;
+    }
+
+    @Override
+    public Activity getDetail(String id) {
+
+        Activity activity = activityDao.getDetail(id);
+        return activity;
+    }
+
 
 }
