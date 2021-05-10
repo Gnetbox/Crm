@@ -74,4 +74,18 @@ public class ActivityRemark {
     public void setActivityId(String activityId) {
         this.activityId = activityId;
     }
+
+    @Override
+    public String toString() {
+        return "ActivityRemark{" +
+                "id='" + id + '\'' +
+                ", noteContent='" + noteContent + '\'' +
+                ", createTime='" + createTime + '\'' +
+                ", createBy='" + createBy + '\'' +
+                ", editTime='" + editTime + '\'' +
+                ", editBy='" + editBy + '\'' +
+                ", editFlag='" + editFlag + '\'' +
+                ", activityId='" + activityId + '\'' +
+                '}';
+    }
 }

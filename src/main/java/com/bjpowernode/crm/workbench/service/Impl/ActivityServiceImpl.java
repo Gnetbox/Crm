@@ -7,6 +7,7 @@ import com.bjpowernode.crm.vo.PagenationVo;
 import com.bjpowernode.crm.workbench.dao.ActivityDao;
 import com.bjpowernode.crm.workbench.dao.ActivityRemarkDao;
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 
 import java.util.List;
@@ -92,6 +93,22 @@ public class ActivityServiceImpl implements ActivityService {
 
         Activity activity = activityDao.getDetail(id);
         return activity;
+    }
+
+    @Override
+    public List<ActivityRemark> getRemark(String id) {
+        List<ActivityRemark> activityRemarks = activityRemarkDao.getRemark(id);
+        return activityRemarks;
+    }
+
+    @Override
+    public boolean delRemark(String id) {
+        boolean flag = true;
+        int count = activityRemarkDao.delRemark(id);
+        if(count != 1){
+            flag = false;
+        }
+        return flag;
     }
 
 

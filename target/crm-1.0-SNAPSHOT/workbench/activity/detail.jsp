@@ -19,6 +19,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
+
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
 				//设置remarkDiv的高度为130px
@@ -36,24 +37,77 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			$("#remarkDiv").css("height","90px");
 			cancelAndSaveBtnDefault = true;
 		});
-		
-		$(".remarkDiv").mouseover(function(){
-			$(this).children("div").children("div").show();
+
+		showDeatil();
+
+		$("#remarkTotal").on("mouseover",$(".remarkDiv"),function (){
+			$(".remarkDiv").children("div").children("div").show();
 		});
-		
-		$(".remarkDiv").mouseout(function(){
-			$(this).children("div").children("div").hide();
+
+		$("#remarkTotal").on("mouseout",$(".remarkDiv"),function (){
+			$(".remarkDiv").children("div").children("div").hide();
 		});
-		
-		$(".myHref").mouseover(function(){
-			$(this).children("span").css("color","red");
-		});
-		
-		$(".myHref").mouseout(function(){
-			$(this).children("span").css("color","#E6E6E6");
-		});
+
 	});
-	
+
+
+	function showDeatil(){
+		let id = "${a.id}";
+		//页面加载完成后，显示备注栏信息
+		$.ajax({
+			url:"workbench/activity/getRemark.do",
+			type:"Post",
+			dataType:"json",
+			data:{"id":id},
+			success:function (data){
+				let html = '';
+				$.each(data,function (index,element){
+					html +=  '<div class="remarkDiv" style="height: 60px;">';
+					html +=  '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
+					html +=  '<div style="position: relative; top: -40px; left: 40px;" >';
+					html +=  '<h5>'+element.noteContent+'</h5>';
+					html +=  '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${a.name}</b> <small style="color: gray;"> '+(element.editFlag == 0?element.createTime:element.editTime)+' 由'+(element.editFlag == 0?element.createBy:element.editBy)+'</small>';
+					html +=  '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
+					html +=  '<a class="myHref" href="javascript:void(0);" onclick="edit(\''+element.id+'\');"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color:#FF0000;"></span></a>';
+					html +=  '&nbsp;&nbsp;&nbsp;&nbsp;';
+					html +=  '<a class="myHref" href="javascript:void(0);" onclick="del(\''+element.id+'\')";><span class="glyphicon glyphicon-remove" style="font-size: 20px; color:#FF0000"></span></a>';
+					html +=  '</div>';
+					html +=  '</div>';
+					html +=  '</div>';
+				})
+
+				$("#remarkDiv").before(html);
+
+
+			}
+		})
+	}
+
+	//备注编辑操作
+	function edit(id){
+		alert(id);
+
+	};
+
+	//备注删除操作
+	function del(id){
+		if(confirm("确定删除此条备注信息吗?")){
+			$.ajax({
+				url:"workbench/activity/delRemark.do",
+				type:"post",
+				dataType:"json",
+				data:{"id":id},
+				success:function (data){
+					if(data.success){
+
+						showDeatil();
+					}
+				}
+			})
+		}
+
+	};
+
 </script>
 
 </head>
@@ -151,39 +205,25 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	</div>
 	
 	<!-- 备注 -->
-	<div style="position: relative; top: 30px; left: 40px;">
-		<div class="page-header">
+	<div style="position: relative; top: 30px; left: 40px;" id="remarkTotal">
+		<div class="page-header" id="remarkHeader">
 			<h4>备注</h4>
 		</div>
-		
+
 		<!-- 备注1 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>哎呦！</h5>
-				<font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				</div>
+		<%--<div class="remarkDiv" style="height: 60px;">
+		<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
+		<div style="position: relative; top: -40px; left: 40px;" >
+			<h5>哎呦！</h5>
+			<font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
+			<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
+				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+				&nbsp;&nbsp;&nbsp;&nbsp;
+				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 			</div>
 		</div>
-		
-		<!-- 备注2 -->
-		<div class="remarkDiv" style="height: 60px;">
-			<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">
-			<div style="position: relative; top: -40px; left: 40px;" >
-				<h5>呵呵！</h5>
-				<font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				</div>
-			</div>
-		</div>
-		
+	</div>
+		--%>
 		<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 			<form role="form" style="position: relative;top: 10px; left: 10px;">
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>

@@ -15,4 +15,23 @@
         delete from tbl_activity_remark where activityId = #{id}
     </delete>
 
+    <!--获取备注信息-->
+    <select id="getRemark" resultType="ActivityRemark">
+        select
+        id,
+        noteContent,
+        createTime,
+        createBy,
+        editTime,
+        editBy,
+        editFlag
+        from tbl_activity_remark
+        where activityId = #{id}
+    </select>
+
+    <!--删除备注信息-->
+    <delete id="delRemark">
+        delete from tbl_activity_remark where id = #{id}
+    </delete>
+
 </mapper>

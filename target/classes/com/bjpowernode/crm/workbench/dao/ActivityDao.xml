@@ -102,6 +102,7 @@
     <select id="getDetail" resultType="Activity">
 
     select
+    a.id,
     u.name as owner,
     a.name,
     a.startDate,

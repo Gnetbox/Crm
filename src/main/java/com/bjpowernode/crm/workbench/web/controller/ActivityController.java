@@ -9,6 +9,7 @@ import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
 import com.bjpowernode.crm.vo.PagenationVo;
 import com.bjpowernode.crm.workbench.domain.Activity;
+import com.bjpowernode.crm.workbench.domain.ActivityRemark;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.Impl.ActivityServiceImpl;
 
@@ -44,7 +45,31 @@ public class ActivityController extends HttpServlet {
         } else if("/workbench/activity/getDetail.do".equals(path)){
             getDetail(request,response);
         }
+        else if("/workbench/activity/getRemark.do".equals(path)){
+            getRemark(request,response);
+        }
+        else if("/workbench/activity/delRemark.do".equals(path)){
+            delRemark(request,response);
+        }
 
+    }
+
+    //删除备注信息
+    private void delRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        String id = request.getParameter("id");
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = activityService.delRemark(id);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    //detail页面加载完成，获取备注信息
+    private void getRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        String id = request.getParameter("id");
+        ActivityService service = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        List<ActivityRemark> activityRemark = service.getRemark(id);
+        PrintJson.printJsonObj(response,activityRemark);
     }
 
     //点击名字，进入到市场活动详情页面部分
