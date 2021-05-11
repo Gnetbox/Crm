@@ -50,8 +50,53 @@ public class ActivityController extends HttpServlet {
         }
         else if("/workbench/activity/delRemark.do".equals(path)){
             delRemark(request,response);
+        }else if("/workbench/activity/saveRemark.do".equals(path)){
+            saveRemark(request,response);
+        }else if("/workbench/activity/updateRemark.do".equals(path)){
+            updateRemark(request,response);
         }
 
+    }
+
+    //修改备注信息
+    private void updateRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        String noteContent = request.getParameter("noteContent");
+        String id = request.getParameter("id");
+
+        ActivityRemark activityRemark = new ActivityRemark();
+        activityRemark.setId(id);
+        activityRemark.setNoteContent(noteContent);
+        activityRemark.setEditTime(DateTimeUtil.getSysTime());
+        User user = (User) (request.getSession().getAttribute("user"));
+        activityRemark.setEditBy(user.getName());
+        activityRemark.setEditFlag("1");
+
+        ActivityService service = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        boolean flag = service.updateRemark(activityRemark);
+        PrintJson.printJsonFlag(response,flag);
+
+    }
+
+    //添加备注信息
+    private void saveRemark(HttpServletRequest request, HttpServletResponse response) {
+
+        String noteContent = request.getParameter("noteContent");
+        String activityId = request.getParameter("activityId");
+
+        ActivityService service = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        ActivityRemark activityRemark = new ActivityRemark();
+        activityRemark.setId(UUIDUtil.getUUID());
+        activityRemark.setNoteContent(noteContent);
+        activityRemark.setActivityId(activityId);
+        User user = (User)request.getSession().getAttribute("user");
+        activityRemark.setCreateBy(user.getName());
+        activityRemark.setCreateTime(DateTimeUtil.getSysTime());
+        activityRemark.setEditFlag("0");
+
+        boolean flag = service.saveRemark(activityRemark);
+        PrintJson.printJsonFlag(response,flag);
     }
 
     //删除备注信息

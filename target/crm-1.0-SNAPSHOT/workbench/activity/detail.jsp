@@ -48,6 +48,27 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			$(".remarkDiv").children("div").children("div").hide();
 		});
 
+		//备注添加操作
+		$("#save").click(function (){
+			if(confirm("确认添加该备注吗？")){
+				let noteContent = $.trim($("#remark").val());
+				let activityId = "${a.id}";
+				$.ajax({
+					url:"workbench/activity/saveRemark.do",
+					type:"post",
+					dataType:"json",
+					data:{"noteContent":noteContent,"activityId":activityId},
+					success:function (data){
+						if(data.success){
+							$("#remark").val('');
+							$("#remarkTotal .remarkDiv").remove();
+							showDeatil();
+						}
+					}
+				})
+			}
+		})
+
 	});
 
 
@@ -62,13 +83,13 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			success:function (data){
 				let html = '';
 				$.each(data,function (index,element){
-					html +=  '<div class="remarkDiv" style="height: 60px;">';
+					html +=  '<div class="remarkDiv" id="'+element.id+'" style="height: 60px;">';
 					html +=  '<img title="zhangsan" src="image/user-thumbnail.png" style="width: 30px; height:30px;">';
 					html +=  '<div style="position: relative; top: -40px; left: 40px;" >';
 					html +=  '<h5>'+element.noteContent+'</h5>';
 					html +=  '<font color="gray">市场活动</font> <font color="gray">-</font> <b>${a.name}</b> <small style="color: gray;"> '+(element.editFlag == 0?element.createTime:element.editTime)+' 由'+(element.editFlag == 0?element.createBy:element.editBy)+'</small>';
 					html +=  '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">';
-					html +=  '<a class="myHref" href="javascript:void(0);" onclick="edit(\''+element.id+'\');"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color:#FF0000;"></span></a>';
+					html +=  '<a class="myHref" href="javascript:void(0);" onclick="edit(\''+element.id+'\',\''+element.noteContent+'\');"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color:#FF0000;"></span></a>';
 					html +=  '&nbsp;&nbsp;&nbsp;&nbsp;';
 					html +=  '<a class="myHref" href="javascript:void(0);" onclick="del(\''+element.id+'\')";><span class="glyphicon glyphicon-remove" style="font-size: 20px; color:#FF0000"></span></a>';
 					html +=  '</div>';
@@ -84,8 +105,28 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	}
 
 	//备注编辑操作
-	function edit(id){
-		alert(id);
+	function edit(id,noteContent){
+
+		$("#noteContent").val(noteContent);
+		$("#editRemarkModal").modal("show");
+		$("#updateRemarkBtn").click(function (){
+			if(confirm("确定更新备注信息吗？")){
+				let noteContent = $("#noteContent").val();
+				$.ajax({
+					url:"workbench/activity/updateRemark.do",
+					type:"post",
+					dataType:"json",
+					data:{"noteContent":noteContent,"id":id},
+					success:function (data){
+						if(data.success){
+							$("#editRemarkModal").modal("hide");
+							$("#remarkTotal .remarkDiv").remove();
+							showDeatil();
+						}
+					}
+				})
+			}
+		})
 
 	};
 
@@ -99,8 +140,9 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				data:{"id":id},
 				success:function (data){
 					if(data.success){
-
-						showDeatil();
+						/*$('#remarkTotal .remarkDiv').remove();
+						showDeatil();*/
+						$("#"+id).remove();
 					}
 				}
 			})
@@ -229,7 +271,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 				<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 				<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 					<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-					<button type="button" class="btn btn-primary">保存</button>
+					<button type="button" class="btn btn-primary" id="save">保存</button>
 				</p>
 			</form>
 		</div>

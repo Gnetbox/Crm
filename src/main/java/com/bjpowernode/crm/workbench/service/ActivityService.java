@@ -24,4 +24,8 @@ public interface ActivityService {
     List<ActivityRemark> getRemark(String id);
 
     boolean delRemark(String id);
+
+    boolean saveRemark(ActivityRemark activityRemark);
+
+    boolean updateRemark(ActivityRemark activityRemark);
 }

@@ -27,11 +27,39 @@
         editFlag
         from tbl_activity_remark
         where activityId = #{id}
+        order by createTime,editTime
+
     </select>
 
     <!--删除备注信息-->
     <delete id="delRemark">
         delete from tbl_activity_remark where id = #{id}
     </delete>
+
+    <!--添加备注信息-->
+    <insert id="saveRemark">
+        insert into tbl_activity_remark
+        (id,
+        noteContent,
+        createTime,
+        createBy,
+        editFlag,
+        activityId)
+
+        values
+        (#{id},
+        #{noteContent},
+        #{createTime},
+        #{createBy},
+        #{editFlag},
+        #{activityId})
+    </insert>
+
+    <!--修改备注信息-->
+    <update id="updateRemark">
+        update tbl_activity_remark
+        set noteContent = #{noteContent},editTime = #{editTime},editBy = #{editBy},editFlag = #{editFlag}
+        where id = #{id}
+    </update>
 
 </mapper>
