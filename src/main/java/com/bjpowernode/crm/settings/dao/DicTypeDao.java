@@ -1,4 +1,10 @@
 package com.bjpowernode.crm.settings.dao;
 
-public class DicTypeDao {
+import com.bjpowernode.crm.settings.domain.DicType;
+
+import java.util.List;
+
+public interface DicTypeDao {
+
+    List<DicType> findTypes();
 }

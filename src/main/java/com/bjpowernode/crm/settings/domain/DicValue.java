@@ -2,80 +2,60 @@ package com.bjpowernode.crm.settings.domain;
 
 public class DicValue {
 
-    private String appellation;
-    private String clueState;
-    private String returnPriority;
-    private String returnState;
-    private String source;
-    private String stage;
-    private String transactionType;
+    private String id;
+    private String value ;
+    private String text ;
+    private String orderNo ;
+    private String typeCode;
 
-    public String getAppellation() {
-        return appellation;
+    public String getId() {
+        return id;
     }
 
-    public void setAppellation(String appellation) {
-        this.appellation = appellation;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getClueState() {
-        return clueState;
+    public String getValue() {
+        return value;
     }
 
-    public void setClueState(String clueState) {
-        this.clueState = clueState;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public String getReturnPriority() {
-        return returnPriority;
+    public String getText() {
+        return text;
     }
 
-    public void setReturnPriority(String returnPriority) {
-        this.returnPriority = returnPriority;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public String getReturnState() {
-        return returnState;
+    public String getOrderNo() {
+        return orderNo;
     }
 
-    public void setReturnState(String returnState) {
-        this.returnState = returnState;
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
-    public String getSource() {
-        return source;
+    public String getTypeCode() {
+        return typeCode;
     }
 
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public String getStage() {
-        return stage;
-    }
-
-    public void setStage(String stage) {
-        this.stage = stage;
-    }
-
-    public String getTransactionType() {
-        return transactionType;
-    }
-
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
+    public void setTypeCode(String typeCode) {
+        this.typeCode = typeCode;
     }
 
     @Override
     public String toString() {
         return "DicValue{" +
-                "appellation='" + appellation + '\'' +
-                ", clueState='" + clueState + '\'' +
-                ", returnPriority='" + returnPriority + '\'' +
-                ", returnState='" + returnState + '\'' +
-                ", source='" + source + '\'' +
-                ", stage='" + stage + '\'' +
-                ", transactionType='" + transactionType + '\'' +
+                "id='" + id + '\'' +
+                ", value='" + value + '\'' +
+                ", text='" + text + '\'' +
+                ", orderNo='" + orderNo + '\'' +
+                ", typeCode='" + typeCode + '\'' +
                 '}';
     }
 }

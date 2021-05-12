@@ -5,6 +5,9 @@
 
 <mapper namespace="com.bjpowernode.crm.settings.dao.DicTypeDao">
 
+    <select id="findTypes" resultType="DicType">
+        select * from tbl_dic_type
+    </select>
 </mapper>
 
 
