@@ -120,6 +120,23 @@
 
     </select>
 
+
+    <!--获取关联市场活动-->
+    <select id="activity" resultType="Activity">
+        select
+            r.id id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name owner
+        from tbl_activity a
+        inner join tbl_user u
+        on a.owner = u.id
+        inner join tbl_clue_activity_relation r
+        on a.id = r.activityId
+        where r.clueId = #{id}
+    </select>
+
 </mapper>
 
 

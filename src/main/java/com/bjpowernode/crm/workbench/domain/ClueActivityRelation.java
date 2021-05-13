@@ -24,8 +24,13 @@ public class ClueActivityRelation {
 	public void setActivityId(String activityId) {
 		this.activityId = activityId;
 	}
-	
-	
 
-	
+	@Override
+	public String toString() {
+		return "ClueActivityRelation{" +
+				"id='" + id + '\'' +
+				", clueId='" + clueId + '\'' +
+				", activityId='" + activityId + '\'' +
+				'}';
+	}
 }

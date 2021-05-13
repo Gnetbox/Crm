@@ -7,8 +7,12 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
+import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.Clue;
+import com.bjpowernode.crm.workbench.domain.ClueActivityRelation;
+import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueService;
+import com.bjpowernode.crm.workbench.service.Impl.ActivityServiceImpl;
 import com.bjpowernode.crm.workbench.service.Impl.ClueServiceImpl;
 
 import javax.servlet.ServletException;
@@ -17,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class ClueController extends HttpServlet {
 
@@ -30,7 +35,43 @@ public class ClueController extends HttpServlet {
             getUserList(request,response);
         }else if(("/workbench/clue/save.do").equals(path)){
             save(request,response);
+        }else if(("/workbench/clue/detail.do").equals(path)){
+            detail(request,response);
+        }else if(("/workbench/clue/activity.do").equals(path)){
+            activity(request,response);
+        }else if(("/workbench/clue/del.do").equals(path)){
+            del(request,response);
         }
+    }
+
+    //解除关联关系
+    private void del(HttpServletRequest request, HttpServletResponse response) {
+
+        String id = request.getParameter("id");
+
+        ClueService clueService = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag = clueService.unbund(id);
+        PrintJson.printJsonFlag(response,flag);
+    }
+
+    //获取关联市场活动列表
+    private void activity(HttpServletRequest request, HttpServletResponse response) {
+
+        String clueId = request.getParameter("clueId");
+        ActivityService a = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        List<Activity> activityList = a.activity(clueId);
+        PrintJson.printJsonObj(response,activityList);
+    }
+
+    //跳转线索详情
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String id = request.getParameter("id");
+        ClueService clueService = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        Clue clue  = clueService.detail(id);
+        request.setAttribute("c",clue);
+        request.getRequestDispatcher("/workbench/clue/detail.jsp").forward(request,response);
+
     }
 
     //保存线索
@@ -71,7 +112,6 @@ public class ClueController extends HttpServlet {
         c.setContactSummary(contactSummary);
         c.setNextContactTime(nextContactTime);
         c.setAddress(address);
-        System.out.println("L74 :"+c);
 
         ClueService clueService = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
         boolean flag = clueService.save(c);

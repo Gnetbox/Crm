@@ -77,7 +77,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 							 "describe" : $.trim($("#create-describe").val()),
 							 "contactSummary" : $.trim($("#create-contactSummary").val()),
 							 "nextContactTime" : $.trim($("#create-nextContactTime").val()),
-							 "address" : $.trim($("#create-address").val()),
+							 "address" : $.trim($("#create-address").val())
 						},
 						success:function (data){
 							if(data.success){
@@ -518,12 +518,12 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<tbody>
 						<tr>
 							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.jsp';">李四先生</a></td>
-							<td>动力节点</td>
-							<td>010-84846003</td>
-							<td>12345678901</td>
-							<td>广告</td>
-							<td>zhangsan</td>
+							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/clue/detail.do?id=02a463ae0f65454997d097f691f56b09';">北山先生</a></td>
+							<td>sougou</td>
+							<td>0890001</td>
+							<td>18799021</td>
+							<td>合作伙伴研讨会</td>
+							<td>张三</td>
 							<td>已联系</td>
 						</tr>
                         <tr class="active">

@@ -21,4 +21,6 @@ public interface ActivityDao {
     int update(Activity activity);
 
     Activity getDetail(String id);
+
+    List<Activity> activity(String clueId);
 }
