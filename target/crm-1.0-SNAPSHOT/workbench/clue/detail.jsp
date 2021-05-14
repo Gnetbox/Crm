@@ -19,6 +19,11 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 	var cancelAndSaveBtnDefault = true;
 	
 	$(function(){
+
+		$("#open").click(function (){
+			$("#bundModal").modal("show");
+		})
+
 		$("#remark").focus(function(){
 			if(cancelAndSaveBtnDefault){
 				//设置remarkDiv的高度为130px
@@ -58,11 +63,82 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		//给查询框绑定enter按下事件
 		$("#search").keydown(function (event){
 			if(event.keyCode == 13){
-				alert("hi");
+				
+				let name = $.trim($("#search").val());
+				let clueId = "${c.id}"
+				let html = '';
+				$.ajax({
+					url:"workbench/clue/getActivityBySearch.do",
+					data:{"name":name,"clueId":clueId},
+					type:"post",
+					dataType:"json",
+					success:function(data){
+						$.each(data,function (index,element){
+							html +=  '<tr>';
+							html +=  '<td><input type="checkbox" value="'+element.id+'" name="check"/></td>';
+							html +=  '<td>'+element.name+'</td>';
+							html +=  '<td>'+element.startDate+'</td>';
+							html +=  '<td>'+element.endDate+'</td>';
+							html +=  '<td>'+element.owner+'</td>';
+							html +=  '</tr>';
+						})
+
+						$("#getActivityBySearch").html(html);
+					}
+				})
+                return false;
 			}
+
+		});
+
+		let ids = new Array();
+		//给关联按键绑定事件
+		$("#relate").click(function (){
+
+			let check = $("input[name='check']:checked");
+			if(check.length == 0){
+				alert("请勾选想要关联的项目");
+			}else {
+				if(confirm("确定建立关联吗？")){
+					$.each(check,function (){
+						ids.push($(this).val());
+					});
+
+					let clueId = "${c.id}";
+
+					$.ajax({
+						url:"workbench/clue/relate.do",
+						type:"post",
+						dataType:"json",
+						traditional: true,
+						data:{"clueId":clueId,"ids":ids},
+						success:function (data){
+							if (data.success){
+
+								//清除搜索框填写的内容
+								$("#search").val('');
+								let opt = '';
+
+								//刷新关联市场活动列表
+								getActivity();
+
+								//重置模态窗口
+								//$("#bundModal")[0].reset();
+
+								//关闭模态窗口
+								$("#bundModal").modal("hide");
+
+							}
+						}
+					})
+				}
+			}
+
 		})
 
 	});
+
+
 
 	//获取市场活动关联列表
 	function getActivity(){
@@ -127,7 +203,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 					<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 						<form class="form-inline" role="form">
 						  <div class="form-group has-feedback">
-						    <input type="text" onsubmit="return false;" id="search" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+						    <input type="text" id="search" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
 						    <span class="glyphicon glyphicon-search form-control-feedback"></span>
 						  </div>
 						</form>
@@ -141,22 +217,19 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 								<td>结束日期</td>
 								<td>所有者</td>
 								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
 							</tr>
 						</thead>
-						<tbody>
-							<%--<tr>
-								<td><input type="checkbox"/></td>
-								<td>发传单</td>
-								<td>2020-10-10</td>
-								<td>2020-10-20</td>
-								<td>zhangsan</td>
-							</tr>--%>
+						<tbody id="getActivityBySearch">
 						</tbody>
 					</table>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+					<button type="button" class="btn btn-primary" id="relate">关联</button>
 				</div>
 			</div>
 		</div>
@@ -489,7 +562,7 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 			</div>
 			
 			<div>
-				<a href="javascript:void(0);" data-toggle="modal"  data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
+				<a href="javascript:void(0);" id="open" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
 			</div>
 		</div>
 	</div>

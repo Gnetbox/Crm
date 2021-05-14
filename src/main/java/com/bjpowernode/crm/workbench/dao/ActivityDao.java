@@ -23,4 +23,6 @@ public interface ActivityDao {
     Activity getDetail(String id);
 
     List<Activity> activity(String clueId);
+
+    List<Activity> getActivityBySearch(Map<String,Object> map);
 }

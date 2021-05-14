@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,39 @@ public class ClueController extends HttpServlet {
         }else if(("/workbench/clue/del.do").equals(path)){
             del(request,response);
         }
+        else if(("/workbench/clue/getActivityBySearch.do").equals(path)){
+            getActivityBySearch(request,response);
+        }else if(("/workbench/clue/relate.do").equals(path)){
+            relate(request,response);
+        }
+    }
+
+    //建立关联
+    private void relate(HttpServletRequest request, HttpServletResponse response) {
+
+        String clueId = request.getParameter("clueId");
+        String[] ids = request.getParameterValues("ids");
+        ClueService clueService = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flag = clueService.relate(clueId,ids);
+
+        PrintJson.printJsonFlag(response,flag);
+
+
+    }
+
+    //查找市场活动
+    private void getActivityBySearch(HttpServletRequest request, HttpServletResponse response) {
+
+        String name = request.getParameter("name");
+        String clueId = request.getParameter("clueId");
+        Map<String,Object> map = new HashMap<>();
+        map.put("name",name);
+        map.put("clueId",clueId);
+
+        ActivityService service = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        List<Activity> activity = service.getActivityBySearch(map);
+        PrintJson.printJsonObj(response,activity);
+
     }
 
     //解除关联关系

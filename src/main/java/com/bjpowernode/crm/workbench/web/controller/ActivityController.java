@@ -203,10 +203,10 @@ public class ActivityController extends HttpServlet {
     //进行删除操作
     private void delete(HttpServletRequest request, HttpServletResponse response) {
 
-        String[] ids = request.getParameterValues("ids");
+        String ids[] = request.getParameterValues("ids");
+
         boolean flag = false;
         for (String id : ids) {
-            System.out.println("L127  :"+id);
             ActivityService service = (ActivityService)ServiceFactory.getService(new ActivityServiceImpl());
             flag = service.delete(id);
             if(flag != true){

@@ -30,4 +30,6 @@ public interface ActivityService {
     boolean updateRemark(ActivityRemark activityRemark);
 
     List<Activity> activity(String clueId);
+
+    List<Activity> getActivityBySearch(Map<String,Object> map);
 }

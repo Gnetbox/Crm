@@ -144,5 +144,11 @@ public class ActivityServiceImpl implements ActivityService {
         return activityList;
     }
 
+    @Override
+    public List<Activity> getActivityBySearch(Map<String,Object> map) {
+
+        return activityDao.getActivityBySearch(map);
+    }
+
 
 }

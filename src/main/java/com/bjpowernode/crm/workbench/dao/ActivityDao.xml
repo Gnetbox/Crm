@@ -137,6 +137,25 @@
         where r.clueId = #{id}
     </select>
 
+    <!--通过搜索关键字 获取市场活动-->
+    <select id="getActivityBySearch" resultType="Activity">
+
+        select
+        a.id,
+        a.name,
+        a.startDate,
+        a.endDate,
+        u.name owner
+        from tbl_activity a
+        inner join tbl_user u
+        on a.owner = u.id
+        where a.name like '%' #{name} '%'
+        and (a.id  not in
+        (select activityId from tbl_clue_activity_relation r where r.clueId = #{clueId})
+        )
+
+    </select>
+
 </mapper>
 
 

@@ -10,6 +10,20 @@
         delete from tbl_clue_activity_relation where id = #{id}
     </delete>
 
+    <!--绑定关联关系-->
+    <insert id="relate">
+        insert into tbl_clue_activity_relation
+        (
+         id,
+         clueId,
+         activityId
+        )
+        values(
+         #{id},
+         #{clueId},
+         #{activityId}
+              )
+    </insert>
 </mapper>
 
 
