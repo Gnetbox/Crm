@@ -150,5 +150,11 @@ public class ActivityServiceImpl implements ActivityService {
         return activityDao.getActivityBySearch(map);
     }
 
+    @Override
+    public List<Activity> getActivityByName(String name) {
+
+        return activityDao.getActivityByName(name);
+    }
+
 
 }

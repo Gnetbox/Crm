@@ -156,6 +156,20 @@
 
     </select>
 
+    <!--通过name 获取市场活动-->
+    <select id="getActivityByName" resultType="Activity">
+        select
+            a.id,
+            a.name,
+            a.startDate,
+            a.endDate,
+            u.name owner
+        from tbl_activity a
+        inner join tbl_user u
+        on a.owner = u.id
+        where a.name like '%' #{name} '%'
+    </select>
+
 </mapper>
 
 

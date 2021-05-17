@@ -47,7 +47,18 @@ public class ClueController extends HttpServlet {
             getActivityBySearch(request,response);
         }else if(("/workbench/clue/relate.do").equals(path)){
             relate(request,response);
+        }else if(("/workbench/clue/getActivityByName.do").equals(path)){
+            getActivityByName(request,response);
         }
+    }
+
+    //获取市场活动
+    private void getActivityByName(HttpServletRequest request, HttpServletResponse response) {
+
+        String name = request.getParameter("name");
+        ActivityService activityService = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+        List<Activity> activityList = activityService.getActivityByName(name);
+        PrintJson.printJsonObj(response,activityList);
     }
 
     //建立关联
