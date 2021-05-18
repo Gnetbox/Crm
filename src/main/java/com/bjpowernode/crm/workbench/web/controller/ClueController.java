@@ -7,9 +7,7 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
-import com.bjpowernode.crm.workbench.domain.Activity;
-import com.bjpowernode.crm.workbench.domain.Clue;
-import com.bjpowernode.crm.workbench.domain.ClueActivityRelation;
+import com.bjpowernode.crm.workbench.domain.*;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import com.bjpowernode.crm.workbench.service.Impl.ActivityServiceImpl;
@@ -23,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class ClueController extends HttpServlet {
 
@@ -49,7 +48,81 @@ public class ClueController extends HttpServlet {
             relate(request,response);
         }else if(("/workbench/clue/getActivityByName.do").equals(path)){
             getActivityByName(request,response);
+        }else if(("/workbench/clue/change.do").equals(path)){
+            change(request,response);
         }
+    }
+
+    //转换线索
+    private void change(HttpServletRequest request, HttpServletResponse response) {
+
+        String clueId = request.getParameter("clueId");
+
+        String flag = request.getParameter("flag");
+        //如果需要创建交易
+        if("f".equals(flag)){
+            
+        }else {
+
+        }
+/*        ClueService clueService = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        Clue clue = clueService.detail(clueId);
+
+        boolean flag = true;
+
+        //设置客户信息
+        Customer customer = new Customer();
+        String customerId = UUIDUtil.getUUID();
+        customer.setId(customerId);
+        customer.setOwner(clue.getOwner());
+        customer.setName(clue.getCompany());
+        customer.setWebsite(clue.getWebsite());
+        customer.setPhone(clue.getPhone());
+        customer.setCreateBy(clue.getCreateBy());
+        customer.setCreateTime(DateTimeUtil.getSysTime());
+        customer.setContactSummary(clue.getContactSummary());
+        customer.setNextContactTime(clue.getNextContactTime());
+        customer.setDescription(clue.getDescription());
+        customer.setAddress(clue.getAddress());
+
+        flag = clueService.saveCustomer(customer);
+
+        if(flag) {
+            //设置联系人信息
+            Contacts contacts = new Contacts();
+            contacts.setId(UUIDUtil.getUUID());
+            contacts.setOwner(clue.getOwner());
+            contacts.setSource(clue.getSource());
+            contacts.setCustomerId(customerId);
+            contacts.setFullname(clue.getFullname());
+            contacts.setAppellation(clue.getAppellation());
+            contacts.setEmail(clue.getEmail());
+            contacts.setMphone(clue.getMphone());
+            contacts.setJob(clue.getJob());
+            contacts.setCreateBy(clue.getCreateBy());
+            contacts.setCreateTime(DateTimeUtil.getSysTime());
+            contacts.setDescription(clue.getDescription());
+            contacts.setContactSummary(clue.getContactSummary());
+            contacts.setNextContactTime(clue.getNextContactTime());
+            contacts.setAddress(clue.getAddress());
+
+            flag = clueService.saveContacts(contacts);
+
+            if(flag){
+                //设置联系人_市场活动_relation
+                //根据clueId查询activityId
+                flag = clueService.saveContactsActivityRelation(clueId);
+            }
+
+            if(flag){
+                //进行删除线索操作
+                flag = clueService.del(clueId);
+                PrintJson.printJsonFlag(response,flag);
+            }
+
+        }*/
+
+
     }
 
     //获取市场活动
