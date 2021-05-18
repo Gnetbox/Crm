@@ -7,9 +7,7 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
-import com.bjpowernode.crm.workbench.domain.Activity;
-import com.bjpowernode.crm.workbench.domain.Clue;
-import com.bjpowernode.crm.workbench.domain.ClueActivityRelation;
+import com.bjpowernode.crm.workbench.domain.*;
 import com.bjpowernode.crm.workbench.service.ActivityService;
 import com.bjpowernode.crm.workbench.service.ClueService;
 import com.bjpowernode.crm.workbench.service.Impl.ActivityServiceImpl;
@@ -20,9 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ClueController extends HttpServlet {
 
@@ -49,8 +45,45 @@ public class ClueController extends HttpServlet {
             relate(request,response);
         }else if(("/workbench/clue/getActivityByName.do").equals(path)){
             getActivityByName(request,response);
+        }else if(("/workbench/clue/change.do").equals(path)){
+            change(request,response);
         }
     }
+
+    //转换线索
+    private void change(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        String clueId = request.getParameter("clueId");
+
+        String flag = request.getParameter("flag");
+        Tran tran = null;
+
+        String createBy = request.getParameter("createBy");
+
+        //如果需要创建交易
+        if("f".equals(flag)){
+            tran = new Tran();
+            tran.setId(UUIDUtil.getUUID());
+            tran.setMoney(request.getParameter("amountOfMoney"));
+            tran.setName(request.getParameter("tradeName"));
+            tran.setExpectedDate(request.getParameter("expectedClosingDate"));
+            tran.setStage(request.getParameter("stage"));
+            tran.setActivityId(request.getParameter("activityId"));
+            tran.setCreateBy(createBy);
+            tran.setCreateTime(DateTimeUtil.getSysTime());
+        }
+
+        ClueService clueService = (ClueService) ServiceFactory.getService(new ClueServiceImpl());
+        boolean flg = clueService.change(clueId,tran,createBy);
+
+        if(flg){
+            response.sendRedirect(request.getContextPath()+"workbench/clue/index.jsp");
+        }
+
+    }
+
+
+
 
     //获取市场活动
     private void getActivityByName(HttpServletRequest request, HttpServletResponse response) {

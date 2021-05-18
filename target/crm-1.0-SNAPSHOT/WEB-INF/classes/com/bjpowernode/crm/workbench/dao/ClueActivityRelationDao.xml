@@ -24,6 +24,16 @@
          #{activityId}
               )
     </insert>
+
+    <!--获取线索-活动关系对象信息-->
+    <select id="findByClueId" resultType="ClueActivityRelation">
+        select* from tbl_clue_activity_relation where clueId = #{clueId}
+    </select>
+
+    <!--删除-->
+    <delete id="del">
+        delete from tbl_clue_activity_relation where clueId = #{clueId}
+    </delete>
 </mapper>
 
 

@@ -5,7 +5,39 @@
 
 <mapper namespace="com.bjpowernode.crm.workbench.dao.CustomerDao">
 	
-  	
+  	<select id="findByName" resultType="Customer">
+        select * from tbl_customer where name = #{customerName}
+    </select>
+
+    <insert id="save">
+        insert into tbl_customer
+        (
+            id,
+            owner,
+            name,
+            website,
+            phone,
+            createBy,
+            createTime,
+            contactSummary,
+            nextContactTime,
+            description,
+            address
+
+        )values(
+            #{id},
+            #{owner},
+            #{name},
+            #{website},
+            #{phone},
+            #{createBy},
+            #{createTime},
+            #{contactSummary},
+            #{nextContactTime},
+            #{description},
+            #{address}
+            )
+    </insert>
 </mapper>
 
 

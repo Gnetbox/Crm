@@ -79,6 +79,15 @@
         where c.id = #{id}
     </select>
 
+    <!--根据id查单条-->
+    <select id="getById" resultType="Clue">
+        select * from tbl_clue where id = #{clueId}
+    </select>
+
+    <!--删除线索-->
+    <delete id="del">
+        delete from tbl_clue where id = #{clueId}
+    </delete>
 
 </mapper>
 

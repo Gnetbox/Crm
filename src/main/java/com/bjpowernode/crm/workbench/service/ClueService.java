@@ -3,6 +3,7 @@ package com.bjpowernode.crm.workbench.service;
 import com.bjpowernode.crm.workbench.domain.Activity;
 import com.bjpowernode.crm.workbench.domain.Clue;
 import com.bjpowernode.crm.workbench.domain.ClueActivityRelation;
+import com.bjpowernode.crm.workbench.domain.Tran;
 
 import java.util.List;
 import java.util.Map;
@@ -15,4 +16,6 @@ public interface ClueService {
     boolean unbund(String id);
 
     boolean relate(String clueId, String[] ids);
+
+    boolean change(String clueId, Tran tran, String createBy);
 }

@@ -73,6 +73,7 @@
     <url-pattern>/workbench/clue/getActivityBySearch.do</url-pattern>
     <url-pattern>/workbench/clue/relate.do</url-pattern>
     <url-pattern>/workbench/clue/getActivityByName.do</url-pattern>
+    <url-pattern>/workbench/clue/change.do</url-pattern>
   </servlet-mapping>
 </web-app>
 
