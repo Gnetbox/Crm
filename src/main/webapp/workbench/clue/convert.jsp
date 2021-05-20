@@ -97,11 +97,14 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 		//转换按钮绑定事件
 		$("#change").click(function (){
 
-			if($("#isCreateTransaction").is(":checked")){
-				$("#tran").submit();
-			}else{
-				window.location.href = "workbench/clue/change.do?clueId=${param.id}";
+			if(confirm("是否进行转换？")){
+				if($("#isCreateTransaction").is(":checked")){
+					$("#tran").submit();
+				}else{
+					window.location.href = "workbench/clue/change.do?clueId=${param.id}";
+				}
 			}
+
 		});
 
 	});
@@ -173,7 +176,6 @@ String basePath = request.getScheme() + "://" + request.getServerName() + ":" + 
 
 			<input type="hidden" name="flag" value="f"/>
 			<input type="hidden" name="clueId" value="${param.id}"/>
-			<input type="hidden" name="createBy" value="${user.name}"/>
 
 		  <div class="form-group" style="width: 400px; position: relative; left: 20px;">
 		    <label for="amountOfMoney">金额</label>

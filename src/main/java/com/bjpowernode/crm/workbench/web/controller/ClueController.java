@@ -58,7 +58,7 @@ public class ClueController extends HttpServlet {
         String flag = request.getParameter("flag");
         Tran tran = null;
 
-        String createBy = request.getParameter("createBy");
+        String createBy = ((User)(request.getSession().getAttribute("user"))).getName();
 
         //如果需要创建交易
         if("f".equals(flag)){
@@ -77,7 +77,7 @@ public class ClueController extends HttpServlet {
         boolean flg = clueService.change(clueId,tran,createBy);
 
         if(flg){
-            response.sendRedirect(request.getContextPath()+"workbench/clue/index.jsp");
+            response.sendRedirect(request.getContextPath()+"/workbench/clue/index.jsp");
         }
 
     }

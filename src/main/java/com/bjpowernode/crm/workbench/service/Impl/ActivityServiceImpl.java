@@ -62,6 +62,7 @@ public class ActivityServiceImpl implements ActivityService {
         //如果活动备注成功删除，进行市场活动删除
         if(countRemark == countDelRemark){
             int count = activityDao.delete(id);
+            System.out.println("L65 :"+count);
             if(count !=0){
                 flag = true;
             }

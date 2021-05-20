@@ -75,6 +75,19 @@
     <url-pattern>/workbench/clue/getActivityByName.do</url-pattern>
     <url-pattern>/workbench/clue/change.do</url-pattern>
   </servlet-mapping>
+
+
+  <!--交易控制器-->
+  <servlet>
+    <servlet-name>TransactionController</servlet-name>
+    <servlet-class>com.bjpowernode.crm.workbench.web.controller.TransactionController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TransactionController</servlet-name>
+    <url-pattern>/workbench/transaction/getOwner.do</url-pattern>
+    <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
+  </servlet-mapping>
+
 </web-app>
 
 

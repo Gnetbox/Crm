@@ -230,23 +230,22 @@ public class ClueServiceImpl implements ClueService {
             }
 
             //8.删除线索备注
-           /* int countDelClueR = clueRemarkDao.del(clueId);
-            if(countDelClueR != clueRemarkList.size()){
+            int countDelClueR = clueRemarkDao.del(clueId);
+            if(countDelClueR != 1){
                 flg = false;
-            }*/
+            }
 
             //9.删除线索和市场活动的关系
-           /* int countDelCar = clueActivityRelationDao.del(clueId);
-            if(countDelCar !=car.size()){
+            int countDelCar = clueActivityRelationDao.del(clueId);
+            if(countDelCar !=1){
                 flg = false;
-            }*/
+            }
 
             //10.删除线索
-           /*int countDelClue =  clueDao.del(clueId);
+           int countDelClue =  clueDao.del(clueId);
            if(countDelClue !=1){
                flg = false;
            }
-*/
 
         return flg;
 
