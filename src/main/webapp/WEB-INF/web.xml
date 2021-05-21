@@ -87,6 +87,7 @@
     <url-pattern>/workbench/transaction/getOwner.do</url-pattern>
     <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
     <url-pattern>/workbench/transaction/saveTran.do</url-pattern>
+    <url-pattern>/workbench/transaction/detail.do</url-pattern>
   </servlet-mapping>
 
 </web-app>

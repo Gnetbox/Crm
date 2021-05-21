@@ -4,4 +4,6 @@ import com.bjpowernode.crm.workbench.domain.Tran;
 
 public interface TransactionService {
     boolean saveTran(Tran t);
+
+    Tran getDetail(String id);
 }

@@ -35,7 +35,20 @@ public class TransactionController extends HttpServlet {
             getCustomerName(request,response);
         }else if("/workbench/transaction/saveTran.do".equals(path)){
             saveTran(request,response);
+        }else if("/workbench/transaction/detail.do".equals(path)){
+            detail(request,response);
         }
+    }
+
+    //获取detail信息
+    private void detail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        String id = request.getParameter("id");
+        TransactionService ts = (TransactionService) ServiceFactory.getService(new TransactionServiceImpl());
+        Tran t = ts.getDetail(id);
+        request.setAttribute("t",t);
+        request.getRequestDispatcher("/workbench/transaction/detail.jsp").forward(request,response);
+
     }
 
     //保存交易信息
@@ -104,5 +117,6 @@ public class TransactionController extends HttpServlet {
         List<User> userList = u.getUserList();
         PrintJson.printJsonObj(response,userList);
     }
+
 
 }

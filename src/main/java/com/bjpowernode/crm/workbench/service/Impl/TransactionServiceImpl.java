@@ -43,4 +43,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         return flg;
     }
+
+    @Override
+    public Tran getDetail(String id) {
+        return tranDao.getDetail(id);
+    }
 }
