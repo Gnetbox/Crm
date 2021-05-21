@@ -51,8 +51,8 @@ public class SysInitListener implements ServletContextListener {
             String value = rb.getString(key);
             pMap.put(key,value);
         }
-
         applicaiton.setAttribute("pMap",pMap);
+
     }
 
     @Override

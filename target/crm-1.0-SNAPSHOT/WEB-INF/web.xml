@@ -86,6 +86,7 @@
     <servlet-name>TransactionController</servlet-name>
     <url-pattern>/workbench/transaction/getOwner.do</url-pattern>
     <url-pattern>/workbench/transaction/getCustomerName.do</url-pattern>
+    <url-pattern>/workbench/transaction/saveTran.do</url-pattern>
   </servlet-mapping>
 
 </web-app>

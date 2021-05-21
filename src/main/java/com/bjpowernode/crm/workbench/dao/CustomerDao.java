@@ -10,6 +10,7 @@ public interface CustomerDao {
 
     int save(Customer c);
 
-
     List<String> getCustomerName(String name);
+
+    int saveCus(Customer c);
 }

@@ -42,6 +42,25 @@
     <select id="getCustomerName" resultType="String">
         select name from tbl_customer where name like '%' #{name} '%'
     </select>
+
+    <!--简单创建客户-->
+    <insert id="saveCus">
+        insert into tbl_customer
+        (
+            id,
+            name,
+            createBy,
+            createTime
+
+        )values(
+                   #{id},
+                   #{name},
+                   #{createBy},
+                   #{createTime}
+               )
+    </insert>
+
+
 </mapper>
 
 

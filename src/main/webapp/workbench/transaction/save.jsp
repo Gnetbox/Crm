@@ -1,8 +1,14 @@
 <%@ page import="java.util.ResourceBundle" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.Set" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/";
+
+    Map<String,String> pMap = (Map<String,String>)application.getAttribute("pMap");
+    Set<String> keySet = pMap.keySet();
+
 %>
 
 
@@ -25,6 +31,23 @@
     <script>
 
         $(function () {
+
+            //拼接json
+            let json = {
+
+              <%
+              for (String key : keySet) {
+               String value = pMap.get(key);
+              %>
+
+                "<%=key%>":<%=value%>,
+
+              <%
+            }
+              %>
+
+            };
+
             //模态窗口中日期插件
             $(".time").datetimepicker({
                 minView: "month",
@@ -76,11 +99,18 @@
 
             //为阶段的下拉框，绑定选中下拉框的事件，根据选中的阶段填写可能性
             $("#create-transactionStage").change(function (){
-                let stage = $("create-transactionStage").val();
-
+                let stage = $("#create-transactionStage").val();
+                let value = json[stage];
+                $("#create-possibility").val(value);
             })
 
+            //给保存按钮绑定事件
+            $("#saveBtn").click(function (){
 
+                if(confirm("确定要保存交易信息吗？")){
+                    $("#saveTran").submit();
+                }
+            })
         })
 
 
@@ -193,34 +223,34 @@
 <div style="position:  relative; left: 30px;">
     <h3>创建交易</h3>
     <div style="position: relative; top: -40px; left: 70%;">
-        <button type="button" class="btn btn-primary">保存</button>
+        <button type="button" class="btn btn-primary" id="saveBtn">保存</button>
         <button type="button" class="btn btn-default">取消</button>
     </div>
     <hr style="position: relative; top: -40px;">
 </div>
-<form class="form-horizontal" role="form" style="position: relative; top: -30px;">
+<form action="workbench/transaction/saveTran.do" id="saveTran" method="post" class="form-horizontal" role="form" style="position: relative; top: -30px;">
     <div class="form-group">
         <label for="create-transactionOwner" class="col-sm-2 control-label">所有者<span
                 style="font-size: 15px; color: red;">*</span></label>
         <div class="col-sm-10" style="width: 300px;">
-            <select class="form-control" id="create-transactionOwner">
+            <select class="form-control" id="create-transactionOwner" name="tranOwner">
             </select>
         </div>
         <label for="create-amountOfMoney" class="col-sm-2 control-label">金额</label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-amountOfMoney">
+            <input type="text" class="form-control" id="create-amountOfMoney" name="tranMoney">
         </div>
     </div>
 
     <div class="form-group">
         <label for="create-transactionName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-transactionName">
+            <input type="text" class="form-control" id="create-transactionName" name="tranName">
         </div>
         <label for="create-expectedClosingDate" class="col-sm-2 control-label">预计成交日期<span
                 style="font-size: 15px; color: red;">*</span></label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control time" id="create-expectedClosingDate">
+            <input type="text" class="form-control time" id="create-expectedClosingDate" name="tranEDate">
         </div>
     </div>
 
@@ -228,12 +258,12 @@
         <label for="create-accountName" class="col-sm-2 control-label">客户名称<span
                 style="font-size: 15px; color: red;">*</span></label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-customerName" placeholder="支持自动补全，输入客户不存在则新建">
+            <input type="text" class="form-control" id="create-customerName" name="tranCName" placeholder="支持自动补全，输入客户不存在则新建">
         </div>
         <label for="create-transactionStage" class="col-sm-2 control-label">阶段<span
                 style="font-size: 15px; color: red;">*</span></label>
         <div class="col-sm-10" style="width: 300px;">
-            <select class="form-control" id="create-transactionStage">
+            <select class="form-control" id="create-transactionStage" name="tranStage">
                 <option></option>
                 <c:forEach items="${stage}" var="s">
                     <option value="${s.value}">${s.text}</option>
@@ -245,7 +275,7 @@
     <div class="form-group">
         <label for="create-transactionType" class="col-sm-2 control-label">类型</label>
         <div class="col-sm-10" style="width: 300px;">
-            <select class="form-control" id="create-transactionType">
+            <select class="form-control" id="create-transactionType" name="tranType">
                 <option></option>
                 <c:forEach items="${transactionType}" var="t">
                     <option value="${t.value}">${t.text}</option>
@@ -254,14 +284,14 @@
         </div>
         <label for="create-possibility" class="col-sm-2 control-label">可能性</label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-possibility">
+            <input type="text" class="form-control" id="create-possibility" name="tranPossibility">
         </div>
     </div>
 
     <div class="form-group">
         <label for="create-clueSource" class="col-sm-2 control-label">来源</label>
         <div class="col-sm-10" style="width: 300px;">
-            <select class="form-control" id="create-clueSource">
+            <select class="form-control" id="create-clueSource" name="tranSource">
                 <option></option>
                 <c:forEach items="${source}" var="s">
                     <option value="${s.value}">${s.text}</option>
@@ -274,7 +304,7 @@
                                                                                            data-target="#findMarketActivity"><span
                 class="glyphicon glyphicon-search"></span></a></label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-activitySrc" value="卖奶茶007">
+            <input type="text" class="form-control" id="create-activitySrc" name="tranASrc" value="卖奶茶007">
             <input type="hidden" name="activitySrc" value="08fae320b6874b4c9ccd76b3c5cda499">
         </div>
     </div>
@@ -285,7 +315,7 @@
                                                                                             data-target="#findContacts"><span
                 class="glyphicon glyphicon-search"></span></a></label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control" id="create-contactsName" value="北山先生">
+            <input type="text" class="form-control" id="create-contactsName" name="tranCN" value="北山先生">
             <input type="hidden" name="contactsName" value="897dc569384c47d7b67c20be29903991">
         </div>
     </div>
@@ -293,21 +323,21 @@
     <div class="form-group">
         <label for="create-describe" class="col-sm-2 control-label">描述</label>
         <div class="col-sm-10" style="width: 70%;">
-            <textarea class="form-control" rows="3" id="create-describe"></textarea>
+            <textarea class="form-control" rows="3" id="create-describe" name="tranDescription"></textarea>
         </div>
     </div>
 
     <div class="form-group">
         <label for="create-contactSummary" class="col-sm-2 control-label">联系纪要</label>
         <div class="col-sm-10" style="width: 70%;">
-            <textarea class="form-control" rows="3" id="create-contactSummary"></textarea>
+            <textarea class="form-control" rows="3" id="create-contactSummary" name="tranCSummary"></textarea>
         </div>
     </div>
 
     <div class="form-group">
         <label for="create-nextContactTime" class="col-sm-2 control-label">下次联系时间</label>
         <div class="col-sm-10" style="width: 300px;">
-            <input type="text" class="form-control time2" id="create-nextContactTime">
+            <input type="text" class="form-control time2" id="create-nextContactTime" name="tranCTime">
         </div>
     </div>
 
