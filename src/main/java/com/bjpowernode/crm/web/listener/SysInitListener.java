@@ -34,7 +34,6 @@ public class SysInitListener implements ServletContextListener {
 
         for (String key : map.keySet()) {
             List<DicValue> dicValues = map.get(key);
-            System.out.println("L38 :"+dicValues);
             //将数据字典存到 上下域中
             applicaiton.setAttribute(key,dicValues);
         }

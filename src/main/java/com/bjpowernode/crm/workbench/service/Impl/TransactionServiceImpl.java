@@ -9,6 +9,8 @@ import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.service.TransactionService;
 
+import java.util.List;
+
 public class TransactionServiceImpl implements TransactionService {
 
     private TranDao tranDao = SqlSessionUtil.getSqlSession().getMapper(TranDao.class);
@@ -47,5 +49,36 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Tran getDetail(String id) {
         return tranDao.getDetail(id);
+    }
+
+    @Override
+    public List<TranHistory> showTranHistory(String tranId) {
+        return tranHistoryDao.showTranHistory(tranId);
+    }
+
+    @Override
+    public boolean changeStage(String stage, String id,String editBy) {
+
+        boolean flag = true;
+
+        Tran t = new Tran();
+        t.setId(id);
+        t.setStage(stage);
+        t.setEditBy(editBy);
+        t.setEditTime(DateTimeUtil.getSysTime());
+        int count = tranDao.changeStage(t);
+        if(count !=1){
+            flag = false;
+        }
+
+        TranHistory th = new TranHistory();
+        th.setTranId(id);
+        th.setStage(stage);
+        int count2 = tranHistoryDao.changeStage(th);
+        if(count !=1){
+            flag = false;
+        }
+
+        return flag;
     }
 }
