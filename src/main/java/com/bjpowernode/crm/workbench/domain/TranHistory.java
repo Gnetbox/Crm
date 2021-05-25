@@ -63,6 +63,17 @@ public class TranHistory {
 		this.tranId = tranId;
 	}
 
-	
-	
+	@Override
+	public String toString() {
+		return "TranHistory{" +
+				"id='" + id + '\'' +
+				", stage='" + stage + '\'' +
+				", money='" + money + '\'' +
+				", expectedDate='" + expectedDate + '\'' +
+				", createTime='" + createTime + '\'' +
+				", createBy='" + createBy + '\'' +
+				", tranId='" + tranId + '\'' +
+				", possibility='" + possibility + '\'' +
+				'}';
+	}
 }

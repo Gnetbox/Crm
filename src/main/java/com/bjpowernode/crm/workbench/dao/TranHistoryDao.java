@@ -11,5 +11,5 @@ public interface TranHistoryDao {
 
     List<TranHistory> showTranHistory(String tranId);
 
-    int changeStage(TranHistory th);
+    int save(TranHistory ts);
 }

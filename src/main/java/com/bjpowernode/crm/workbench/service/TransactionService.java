@@ -12,5 +12,7 @@ public interface TransactionService {
 
     List<TranHistory> showTranHistory(String tranId);
 
-    boolean changeStage(String stage, String id,String editBy);
+    boolean changeStage(Tran t);
+
+    List<Tran> getCharts();
 }

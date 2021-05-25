@@ -7,7 +7,6 @@ import com.bjpowernode.crm.utils.DateTimeUtil;
 import com.bjpowernode.crm.utils.PrintJson;
 import com.bjpowernode.crm.utils.ServiceFactory;
 import com.bjpowernode.crm.utils.UUIDUtil;
-import com.bjpowernode.crm.workbench.domain.Customer;
 import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.service.CustomerService;
@@ -15,12 +14,12 @@ import com.bjpowernode.crm.workbench.service.Impl.CustomerServiceImpl;
 import com.bjpowernode.crm.workbench.service.Impl.TransactionServiceImpl;
 import com.bjpowernode.crm.workbench.service.TransactionService;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,11 +50,32 @@ public class TransactionController extends HttpServlet {
 
         String stage = request.getParameter("stage");
         String id = request.getParameter("id");
+        String money = request.getParameter("money");
+        String expectedDate = request.getParameter("expectedDate");
         String editBy = ((User)(request.getSession().getAttribute("user"))).getName();
+        String editTime = DateTimeUtil.getSysTime();
+
+        Tran t = new Tran();
+        t.setId(id);
+        t.setEditBy(editBy);
+        t.setEditTime(editTime);
+        t.setStage(stage);
+        t.setMoney(money);
+        t.setExpectedDate(expectedDate);
 
         TransactionService ts = (TransactionService) ServiceFactory.getService(new TransactionServiceImpl());
-        boolean flag = ts.changeStage(stage,id,editBy);
-        PrintJson.printJsonFlag(response,flag);
+        boolean flag = ts.changeStage(t);
+
+        Map<String,String> pMap = (Map<String,String>)request.getServletContext().getAttribute("pMap");
+        String possibility = pMap.get(stage);
+        t.setPossibility(possibility);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("success",flag);
+        map.put("tran",t);
+
+        PrintJson.printJsonObj(response,map);
+
     }
 
     //展现交易历史

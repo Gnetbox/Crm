@@ -14,6 +14,20 @@ List<DicValue> stageList = (List<DicValue>)application.getAttribute("stage");
 //准备阶段和可能性之间的对应关系
 Map<String,String> pMap = (Map<String,String>)application.getAttribute("pMap");
 Set<String> keySet = pMap.keySet();
+
+//找到零界点
+int point = 0;
+for(int i=0;i<stageList.size();i++){
+
+	DicValue dicValue = stageList.get(i);
+	String stage = dicValue.getValue();
+	String possibility = pMap.get(stage);
+	if("0".equals(possibility)){
+		point = i;
+		break;
+	}
+}
+
 %>
 
 <!DOCTYPE html>
@@ -107,6 +121,7 @@ Set<String> keySet = pMap.keySet();
 
 	});
 
+
 	let html = '';
 	//展现交易历史
 	function showTranHistory(){
@@ -128,10 +143,10 @@ Set<String> keySet = pMap.keySet();
 				})
 
 				$("#history").html(html);
-
+				html = '';
 			}
 		})
-	}
+	};
 
 	//改变交易阶段
 	function changeStage(stage,i){
@@ -140,19 +155,133 @@ Set<String> keySet = pMap.keySet();
 			url:"workbench/transaction/changeStage.do",
 			type:"post",
 			dataType: "json",
-			data:{"stage":stage,"id":"${t.id}"},
+			data:{
+				"stage":stage,
+				"id":"${t.id}",
+				"money":"${t.money}",
+				"expectedDate":"${t.expectedDate}"
+			},
 			success:function (data){
 				if(data.success){
 					//刷新交易详情列表
+					$("#stage").html(data.tran.stage);
+					$("#possibility").html(data.tran.possibility);
+					$("#editBy").html(data.tran.editBy);
+					$("#editTime").html(data.tran.editTime);
+
+					//刷新交易阶段历史列表
+					$("#history").empty();
+					showTranHistory();
 
 					//改变阶段进度条
+					changeIcon(stage,i);
 
 				}
 			}
 		})
+	};
+
+	//修改交易阶段进度条
+	function changeIcon(stage,xiabiao){
+
+		//当前阶段
+		let currentStage = stage;
+
+		//当前阶段对应的可能性
+		let possibility = $("#possibility").html();
+
+		//阶段对应下标
+		let index = xiabiao;
+
+		//拿到灵界点
+		let point = "<%=point%>";
+
+		//开始分情况修改每一个图标
+		//如果阶段对应的可能性为0，说明前7个是黑圈，后两个一个是红叉，一个是黑叉
+		if(possibility=="0"){
+			//遍历前7个
+			for(let i=0;i<point;i++){
+				//黑圈------------
+				//移除原有样式
+				$("#"+i).removeClass();
+				//添加样式
+				$("#"+i).addClass("glyphicon glyphicon-record mystage");
+				//颜色
+				$("#"+i).css("color","#000000");
+
+			}
+			//遍历后两个
+			for(let i=point;i<<%=stageList.size()%>;i++){
+				//如果是当前下标
+				if(i==index){
+					//红叉------
+					//移除原有样式
+					$("#"+i).removeClass();
+					//添加样式
+					$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+					//颜色
+					$("#"+i).css("color","#FF0000");
+				}else {
+					//黑叉-------
+					//移除原有样式
+					$("#"+i).removeClass();
+					//添加样式
+					$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+					//颜色
+					$("#"+i).css("color","#000000");
+				}
+			}
+
+		}
+
+		//如果阶段对应的可能性不为0，说明后2个是黑叉，前7个是绿勾，绿标记，黑圈
+		else {
+
+			//后两个
+			for(let i=point;i<<%=stageList.size()%>;i++){
+				//黑叉----
+				//移除原有样式
+				$("#"+i).removeClass();
+				//添加样式
+				$("#"+i).addClass("glyphicon glyphicon-remove mystage");
+				//颜色
+				$("#"+i).css("color","#000000");
+			}
+
+			//前7个
+			for(let i=0;i<point;i++){
+				//当前标记
+				if(i==index){
+					//绿标-----
+					//移除原有样式
+					$("#"+i).removeClass();
+					//添加样式
+					$("#"+i).addClass("glyphicon glyphicon-map-marker mystage");
+					//颜色
+					$("#"+i).css("color","#90F790");
+				}else if(i<index){
+					//绿勾----
+					//移除原有样式
+					$("#"+i).removeClass();
+					//添加样式
+					$("#"+i).addClass("glyphicon glyphicon-ok-circle mystage");
+					//颜色
+					$("#"+i).css("color","#90F790");
+				}else {
+					//黑圈-----
+					//移除原有样式
+					$("#"+i).removeClass();
+					//添加样式
+					$("#"+i).addClass("glyphicon glyphicon-record mystage");
+					//颜色
+					$("#"+i).css("color","#000000");
+				}
+			}
+
+		}
+
 	}
-	
-	
+
 </script>
 
 </head>
@@ -175,7 +304,7 @@ Set<String> keySet = pMap.keySet();
 	</div>
 
 	<!-- 阶段状态 -->
-	<div style="position: relative; left: 40px; top: -50px;">
+	<div style="position: relative; left: 40px; top: -50px;" id="stageAgain">
 
 		<%
 		Tran t = (Tran)request.getAttribute("t");
@@ -259,40 +388,54 @@ Set<String> keySet = pMap.keySet();
 				String stage = dv.getValue();
 				String possibility = pMap.get(stage);
 
-				//如果是当前阶段
-				if(i==index){
-				//绿灯--------------
-		%>
+				//遍历出来的阶段对应的可能性为0时，后两个----为黑叉
+				if("0".equals(possibility)){
+				    //黑叉--------------------
+        %>
 
-		<span id="<%=i%>" onclick="changeStage('<%=stage%>','<%=i%>');" class="glyphicon glyphicon-map-marker mystage"
-			  data-toggle="popover" data-placement="bottom"
-			  data-content="<%=dv.getText()%>" style="color: #90F790;"></span>
-		-----------
-		<%
-				}else if(i<index){
-					//绿勾--------------
-		%>
+        <span id="<%=i%>" onclick="changeStage('<%=stage%>','<%=i%>');" class="glyphicon glyphicon-remove mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #000000;"></span>
+        -----------
+        <%
+                //遍历出来的阶段对应的可能性不为0，是前7个
+                }else {
+                    //如果是当前阶段
+                    if(i==index){
+                        //绿灯--------------
+        %>
 
-		<span id="<%=i%>" onclick="changeStage('<%=stage%>','<%=i%>');" class="glyphicon glyphicon-ok-circle mystage"
-			  data-toggle="popover" data-placement="bottom"
-			  data-content="<%=dv.getText()%>" style="color: #90F790;"></span>
-		-----------
-		<%
-				}else {
-					//黑圈--------------
-		%>
+        <span id="<%=i%>" onclick="changeStage('<%=stage%>','<%=i%>');" class="glyphicon glyphicon-map-marker mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #90F790;"></span>
+        -----------
+        <%
+        }else if(i<index){
+            //绿勾--------------
+        %>
 
-		<span id="<%=i%>" onclick="changeStage('<%=stage%>','<%=i%>');" class="glyphicon glyphicon-record mystage"
-			  data-toggle="popover" data-placement="bottom"
-			  data-content="<%=dv.getText()%>" style="color: #000000;"></span>
-		-----------
-		<%
-				}
+        <span id="<%=i%>" onclick="changeStage('<%=stage%>','<%=i%>');" class="glyphicon glyphicon-ok-circle mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #90F790;"></span>
+        -----------
+        <%
+        }else {
+            //黑圈--------------
+        %>
+
+        <span id="<%=i%>" onclick="changeStage('<%=stage%>','<%=i%>');" class="glyphicon glyphicon-record mystage"
+              data-toggle="popover" data-placement="bottom"
+              data-content="<%=dv.getText()%>" style="color: #000000;"></span>
+        -----------
+        <%
+                        }
+                }
+
 			}
 
 		}
 		%>
-
+        <span class="closingDate">${t.expectedDate}</span>
 <%--		阶段&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		<span class="glyphicon glyphicon-ok-circle mystage" data-toggle="popover" data-placement="bottom" data-content="资质审查" style="color: #90F790;"></span>
 		-----------
@@ -337,7 +480,7 @@ Set<String> keySet = pMap.keySet();
 			<div style="width: 300px; color: gray;">客户名称</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${t.customerId}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">阶段</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${t.stage}</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="stage">${t.stage}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -345,7 +488,7 @@ Set<String> keySet = pMap.keySet();
 			<div style="width: 300px; color: gray;">类型</div>
 			<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b>${t.type}</b></div>
 			<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">可能性</div>
-			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b>${t.possibility}</b></div>
+			<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="possibility">${t.possibility}</b></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
 			<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px; left: 450px;"></div>
 		</div>
@@ -369,7 +512,7 @@ Set<String> keySet = pMap.keySet();
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 70px;">
 			<div style="width: 300px; color: gray;">修改者</div>
-			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b>${t.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;">${t.editTime}</small></div>
+			<div style="width: 500px;position: relative; left: 200px; top: -20px;"><b id="editBy">${t.editBy}&nbsp;&nbsp;</b><small style="font-size: 10px; color: gray;" id="editTime">${t.editTime}</small></div>
 			<div style="height: 1px; width: 550px; background: #D5D5D5; position: relative; top: -20px;"></div>
 		</div>
 		<div style="position: relative; left: 40px; height: 30px; top: 80px;">

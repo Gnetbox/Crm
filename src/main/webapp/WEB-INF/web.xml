@@ -92,6 +92,17 @@
     <url-pattern>/workbench/transaction/changeStage.do</url-pattern>
   </servlet-mapping>
 
+  <!--统计图-->
+  <servlet>
+    <servlet-name>ChartController</servlet-name>
+    <servlet-class>com.bjpowernode.crm.workbench.web.controller.ChartController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChartController</servlet-name>
+    <url-pattern>/workbench/chart/getCharts.do</url-pattern>
+
+  </servlet-mapping>
+
 </web-app>
 
 

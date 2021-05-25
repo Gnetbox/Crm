@@ -57,28 +57,35 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public boolean changeStage(String stage, String id,String editBy) {
+    public boolean changeStage(Tran t) {
 
         boolean flag = true;
 
-        Tran t = new Tran();
-        t.setId(id);
-        t.setStage(stage);
-        t.setEditBy(editBy);
-        t.setEditTime(DateTimeUtil.getSysTime());
         int count = tranDao.changeStage(t);
         if(count !=1){
             flag = false;
         }
 
-        TranHistory th = new TranHistory();
-        th.setTranId(id);
-        th.setStage(stage);
-        int count2 = tranHistoryDao.changeStage(th);
-        if(count !=1){
+        TranHistory ts = new TranHistory();
+        ts.setId(UUIDUtil.getUUID());
+        ts.setStage(t.getStage());
+        ts.setTranId(t.getId());
+        ts.setMoney(t.getMoney());
+        ts.setExpectedDate(t.getExpectedDate());
+        ts.setCreateTime(t.getEditTime());
+        ts.setCreateBy(t.getEditBy());
+
+        int count2 = tranHistoryDao.save(ts);
+        if(count2 !=1){
             flag = false;
         }
-
         return flag;
     }
+
+    @Override
+    public List<Tran> getCharts() {
+        return tranDao.getCharts();
+    }
+
+
 }

@@ -87,6 +87,11 @@
             editTime = #{editTime}
         where id = #{id}
     </update>
+
+    <select id="getCharts" resultType="Tran">
+        SELECT stage,COUNT(*) AS SUM FROM tbl_tran GROUP BY stage ORDER BY SUM DESC
+    </select>
+
 </mapper>
 
 
