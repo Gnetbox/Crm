@@ -4,6 +4,7 @@ import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.domain.TranHistory;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TransactionService {
     boolean saveTran(Tran t);
@@ -14,5 +15,5 @@ public interface TransactionService {
 
     boolean changeStage(Tran t);
 
-    List<Tran> getCharts();
+    Map<String, Object> getCharts();
 }

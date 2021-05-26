@@ -88,8 +88,12 @@
         where id = #{id}
     </update>
 
-    <select id="getCharts" resultType="Tran">
-        SELECT stage,COUNT(*) AS SUM FROM tbl_tran GROUP BY stage ORDER BY SUM DESC
+    <select id="getTotal" resultType="int">
+        select count(*) from tbl_tran
+    </select>
+
+    <select id="getList" resultType="map">
+        SELECT stage as name,COUNT(*) AS value FROM tbl_tran GROUP BY stage ORDER BY value DESC
     </select>
 
 </mapper>

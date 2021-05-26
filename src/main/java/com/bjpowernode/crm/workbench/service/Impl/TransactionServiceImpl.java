@@ -9,7 +9,9 @@ import com.bjpowernode.crm.workbench.domain.Tran;
 import com.bjpowernode.crm.workbench.domain.TranHistory;
 import com.bjpowernode.crm.workbench.service.TransactionService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TransactionServiceImpl implements TransactionService {
 
@@ -83,8 +85,19 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<Tran> getCharts() {
-        return tranDao.getCharts();
+    public Map<String, Object> getCharts() {
+
+        Map<String,Object> map = new HashMap<>();
+
+        //取得total
+        int total = tranDao.getTotal();
+        //取得dataList
+        List<Map<String,Object>> dataList = tranDao.getList();
+
+        //将total，和dataList保存到map中
+        map.put("total",total);
+        map.put("dataList",dataList);
+        return map;
     }
 
 

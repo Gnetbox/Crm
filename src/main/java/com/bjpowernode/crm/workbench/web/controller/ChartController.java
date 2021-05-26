@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class ChartController extends HttpServlet {
 
@@ -29,9 +30,7 @@ public class ChartController extends HttpServlet {
     private void getCharts(HttpServletRequest request, HttpServletResponse response) {
 
         TransactionService ts = (TransactionService) ServiceFactory.getService(new TransactionServiceImpl());
-        List<Tran> tList = ts.getCharts();
-        PrintJson.printJsonObj(response,tList);
-
-        System.out.println("L tran :"+tList);
+        Map<String,Object> map = ts.getCharts();
+        PrintJson.printJsonObj(response,map);
     }
 }
